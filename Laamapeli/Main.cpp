@@ -63,13 +63,11 @@ int main(int argc, char **argv)
 
 
 	// Start audio
-	ALLEGRO_SAMPLE *lamasong = al_load_sample("llama song.ogg");
-	ALLEGRO_SAMPLE *njak = al_load_sample("njak.ogg");
-	ALLEGRO_SAMPLE *die = al_load_sample("llama is kill.ogg");
+	ALLEGRO_SAMPLE *lamasong = al_load_sample("Data\\Audio\\llama_song.ogg");
+	ALLEGRO_SAMPLE *njak = al_load_sample("Data\\Audio\\njak.ogg");
+	ALLEGRO_SAMPLE *die = al_load_sample("Data\\Audio\\llama_is_kill.ogg");
 	al_reserve_samples(3);
 	al_play_sample(lamasong, 0.3, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
-
-
 
 
 	while(!done)
@@ -134,12 +132,13 @@ int main(int argc, char **argv)
 				tempScore = player.getScore();
 
 				// check if player has dropped to bottom
-				if (player.getY() >= HEIGHT)
+				if (player.getY() >= HEIGHT) {
 					isGameOver = true;
 					al_play_sample(die, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+				};
 
 				// If player isn't jumping and isn't on ground then move down
-				if (!player.getJump() && !player.getGround())
+				if (!player.getJump() && player.getGround())
 					player.moveDown();
 
 				player.setGround(false);
