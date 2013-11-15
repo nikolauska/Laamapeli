@@ -72,7 +72,7 @@
   <ItemGroup>
     <ClInclude Include="Ground.h" />
     <ClInclude Include="Header.h" />
-    <ClInclude Include="Menu.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>

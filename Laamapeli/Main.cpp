@@ -1,21 +1,26 @@
 #include "Header.h"
 #include "Player.h"
 #include "Ground.h"
+#include "Text.h"
 
 int main(int argc, char **argv)
 {
 	// initalize player and ground class
 	Player player = Player();
 	Ground ground[gMax];
+	Text text = Text();
 	
 
 	// Local variables
 	int tempJumpTime = 0;
 	int tempPointTime = 0;
 	int tempScore = 0;
+	int menuSelect = 1;
 	bool isGameOver = false;
 	bool done = false;
 	bool start = true;
+	bool menuBool = false;
+	bool settingsBool = false;
 
 	//Allegro variables
 	ALLEGRO_DISPLAY *display = NULL;
@@ -24,7 +29,7 @@ int main(int argc, char **argv)
 	ALLEGRO_TIMER *pointTimer = NULL;
 	ALLEGRO_TIMER *jumpTimer = NULL;
 	ALLEGRO_FONT *font18 = NULL;
-
+	
 	//Test allegro object
 	if(!al_init())										
 		return -1;
@@ -39,18 +44,18 @@ int main(int argc, char **argv)
 	// Load addons for allegro
 	al_init_primitives_addon();
 	al_install_keyboard();
-	al_init_font_addon();
+	al_init_font_addon(); 
 	al_init_ttf_addon();
 	al_install_audio();
 	al_init_acodec_addon();
 	al_init_image_addon();
 
+	font18 = al_load_font("arial.ttf", 18, 0);
+
 	// Create timer 
 	event_queue = al_create_event_queue();
 	timer = al_create_timer(1.0 / FPS);
 	
-	// Load font for text
-	font18 = al_load_font("arial.ttf", 18, 0);
 
 	// Register keyboard events
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -72,7 +77,55 @@ int main(int argc, char **argv)
 
 	while(!done)
 	{
-		if (start) {
+		if (menuBool) {
+
+			al_draw_text(font18, al_map_rgb(255, 0, 255), menuPlayGamePosX, menuPlayGamePosY, ALLEGRO_ALIGN_CENTER, "Play game");
+			al_draw_text(font18, al_map_rgb(255, 0, 255), menuSettingsPosX, menuSettingsPosY, ALLEGRO_ALIGN_CENTER, "Settings");
+			al_draw_text(font18, al_map_rgb(255, 0, 255), menuExitPosX, menuExitPosY, ALLEGRO_ALIGN_CENTER, "Quit");
+
+			if(menuSelect == 1) {
+				int x1 = menuPlayGamePosX - 50;
+				int y1 = menuPlayGamePosY + 25;
+
+				int x2 = menuPlayGamePosX + 50;
+				int y2 = menuPlayGamePosY + 25;
+
+				al_draw_line(x1, y1, x2, y2, al_map_rgb(255, 0, 0), 5);
+				//text.animateUp(1);
+				//text.animateDown(2);
+				//text.animateDown(3);
+			} 
+			else if(menuSelect == 2) {	
+				int x1 = menuSettingsPosX - 50;
+				int y1 = menuSettingsPosY + 25;
+
+				int x2 = menuSettingsPosX + 50;
+				int y2 = menuSettingsPosY + 25;
+
+				al_draw_line(x1, y1, x2, y2, al_map_rgb(255, 0, 0), 5);
+				//text.animateDown(1);
+				//text.animateUp(2);
+				//text.animateDown(3);
+			}
+			else if(menuSelect == 3) {
+				int x1 = menuExitPosX - 50;
+				int y1 = menuExitPosY + 25;
+
+				int x2 = menuExitPosX + 50;
+				int y2 = menuExitPosY + 25;
+
+				al_draw_line(x1, y1, x2, y2, al_map_rgb(255, 0, 0), 5);
+				//text.animateDown(1);
+				//text.animateDown(2);
+				//text.animateUp(3);
+			}
+
+			// flip backbuffer to screen and empty old screen which is now in backbuffer
+			al_flip_display();
+			al_clear_to_color(al_map_rgb(0, 0, 0));	
+		}
+
+		if (!menuBool && start) {
 			start = false;
 
 
@@ -86,7 +139,6 @@ int main(int argc, char **argv)
 
 			// draw player, ground and text to backbuffer
 			player.drawPlayer();
-			al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Score: %i", player.getScore());
 
 			// flip backbuffer to screen and empty old screen which is now in backbuffer
 			al_flip_display();
@@ -98,7 +150,7 @@ int main(int argc, char **argv)
 
 		if(ev.type == ALLEGRO_EVENT_TIMER) {
 			// Check if game is still running
-			if (!isGameOver) {		
+			if (!isGameOver && !menuBool) {		
 
 				// Do this if player is jumping
 				if (player.getJump()) {
@@ -165,9 +217,7 @@ int main(int argc, char **argv)
 			} else {
 				// Draw end text to backbuffer
 				al_draw_textf(font18, al_map_rgb(0, 255, 255), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i ! Press Enter to restart!", player.getScore());
-			}
-			
-			
+			}		
 
 			// flip backbuffer to screen and empty old screen which is now in backbuffer
 			al_flip_display();
@@ -193,11 +243,34 @@ int main(int argc, char **argv)
 					break;
 				}
 				case ALLEGRO_KEY_ENTER:{
-					if (isGameOver) {
-						start = true;
-						isGameOver = false;
+					if(menuBool){
+						switch(menuSelect){
+							case(0):{
+								menuBool = false;
+							}
+							case(1):{
+								settingsBool = true;
+							}
+							case(2):{
+								done = true;
+							}
+						}
+					}					
+					break;
+				}
+				case ALLEGRO_KEY_DOWN:{
+					if (menuBool) {
+						if(menuSelect != 3)
+							menuSelect += 1;
 					}						
-				break;
+					break;
+				}
+				case ALLEGRO_KEY_UP:{
+					if (menuBool) {
+						if(menuSelect != 1)
+							menuSelect -= 1;
+					}						
+					break;
 				}
 			}
 		}

@@ -13,10 +13,18 @@
 #include <time.h>
 using namespace std;
 
-//Screen varables
+//Screen variables
 const int WIDTH = 1024; // Screen width
 const int HEIGHT = 768; // Screen height	
 const int FPS = 60; // Frames-per-second
+
+//Menu Variables
+const int menuPlayGamePosX = WIDTH / 2;
+const int menuPlayGamePosY = (HEIGHT / 8) * 3;
+const int menuSettingsPosX = WIDTH / 2;
+const int menuSettingsPosY = (HEIGHT / 8) * 4;
+const int menuExitPosX = WIDTH / 2;
+const int menuExitPosY = (HEIGHT / 8) * 5;
 
 //Game variables
 const float jumpTime = FPS * 1.2; // How long player goes up after presing space
