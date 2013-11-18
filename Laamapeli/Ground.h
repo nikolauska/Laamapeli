@@ -13,7 +13,6 @@ class Ground{
 
 		void start(); 
 		void create(int, int, int);		
-		void draw();
 		void move(int);
 		bool groundCheck(int, int);
 
@@ -66,16 +65,6 @@ void Ground::move(int speed){
 	this->x -= speed;
 }
 
-// Draw ground
-void Ground::draw(){
-	int x1 = this->x - 100;
-	int y1 = this->y;
-
-	int x2 = this->x + 100;
-	int y2 = this->y;
-
-	al_draw_line(x1, y1, x2, y2, al_map_rgb(255, 0, 0), 10);
-}
 
 // Check if player is on ground
 bool Ground::groundCheck(int pX, int pY){

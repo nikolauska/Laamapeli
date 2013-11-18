@@ -32,7 +32,6 @@ class Player{
 		int getX();
 		int getY();
 
-		void drawPlayer();
 		void moveUp();
 		void moveDown();
 };
@@ -45,15 +44,6 @@ void Player::start(){
 	this->y = pStartY; 
 	this->speed = startSpeed; 
 	this->score = 0;
-}
-
-// Draw player
-void Player::drawPlayer(){
-	ALLEGRO_BITMAP *lamapic = al_load_bitmap("Data/Pictures/lamapic.png");
-
-	al_draw_bitmap(lamapic, this->x, this->y, NULL);
-
-	al_destroy_bitmap(lamapic);
 }
 
 // Get/Set player ground value
