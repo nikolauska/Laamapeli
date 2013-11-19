@@ -14,11 +14,12 @@
 using namespace std;
 
 //Screen variables
-const int WIDTH = 1920; // Screen width
-const int HEIGHT = 1080; // Screen height	
-const int FPS = 120; // Frames-per-second
+const int WIDTH = 1024; // Screen width
+const int HEIGHT = 768; // Screen height	
+const int FPS = 60; // Frames-per-second
 
 //Menu Variables
+const int menuSpeed = 5;
 const int menuPlayGamePosX = WIDTH / 2;
 const int menuPlayGamePosY = (HEIGHT / 8) * 3;
 const int menuSettingsPosX = WIDTH / 2;
@@ -27,7 +28,7 @@ const int menuExitPosX = WIDTH / 2;
 const int menuExitPosY = (HEIGHT / 8) * 5;
 
 //Game variables
-const float upTime = 1; // How long player goes up after presing space
+const float upTime = 1 + HEIGHT * 0.1; // How long player goes up after presing space
 const float upSpeed = 0.01; // at which speed player is going up
 const float downSpeed = 0.5; // at which speed player is going down
 const float scoreTime = 0.1; // How often points are given
@@ -41,7 +42,7 @@ const int pSize = 30; // player size
 const int pMove = 6;
 
 //ground variables
-const int gMax = 5; // How many different platforms are created
+const int gMax = (WIDTH / 300) + 3; // How many different platforms are created
 const int gPosY1 = (HEIGHT / 10) * 2; // Ground Y position 1
 const int gPosY2 = (HEIGHT / 10) * 4; // Ground Y position 2
 const int gPosY3 = (HEIGHT / 10) * 6; // Ground Y position 3

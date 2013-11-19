@@ -16,7 +16,7 @@ class Draw{
 		void endText(int);
 		void gameText(int, int);
 
-		void menu(int);
+		void mainMenu(int, int, int, int);
 
 		int picHeight(){return al_get_bitmap_height(lamapic);}
 };
@@ -53,10 +53,13 @@ void Draw::gameText(int score, int speed){
 	al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Score: %i	Speed: %i", score, speed);
 }
 
-void Draw::menu(int selection){
-	al_draw_text(font18, al_map_rgb(255, 0, 255), menuPlayGamePosX, menuPlayGamePosY, ALLEGRO_ALIGN_CENTER, "Play game");
-	al_draw_text(font18, al_map_rgb(255, 0, 255), menuSettingsPosX, menuSettingsPosY, ALLEGRO_ALIGN_CENTER, "Settings");
-	al_draw_text(font18, al_map_rgb(255, 0, 255), menuExitPosX, menuExitPosY, ALLEGRO_ALIGN_CENTER, "Quit");
+void Draw::mainMenu(int selection, int playY, int settingsY, int quitY){
+	al_draw_text(font18, al_map_rgb(255, 0, 255), menuPlayGamePosX, playY, ALLEGRO_ALIGN_CENTER, "Play game");
+	al_draw_text(font18, al_map_rgb(255, 0, 255), menuSettingsPosX, settingsY, ALLEGRO_ALIGN_CENTER, "Settings");
+	al_draw_text(font18, al_map_rgb(255, 0, 255), menuExitPosX, quitY, ALLEGRO_ALIGN_CENTER, "Quit");
+	al_draw_text(font18, al_map_rgb(255, 0, 255), menuPlayGamePosX, playY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Graphics");
+	al_draw_text(font18, al_map_rgb(255, 0, 255), menuSettingsPosX, settingsY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Audio");
+	al_draw_text(font18, al_map_rgb(255, 0, 255), menuExitPosX, quitY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Back");
 
 	if(selection == 1) {
 		int x1 = menuPlayGamePosX - 50;

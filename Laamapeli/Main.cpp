@@ -3,6 +3,7 @@
 #include "Ground.h"
 #include "Audio.h"
 #include "Draw.h"
+#include "Menu.h"
 
 // Local variables
 int tempJumpTime = 0;
@@ -10,9 +11,10 @@ int tempPointTime = 0;
 int tempScore = 0;
 int menuSelect = 1;
 bool isGameOver = false;
+bool redraw = false;
 bool done = false;
 bool start = true;
-bool menuBool = false;
+bool menuBool = true;
 bool settingsBool = false;
 
 int main(int argc, char **argv)
@@ -42,6 +44,7 @@ int main(int argc, char **argv)
 	Ground ground[gMax];
 	Draw draw = Draw();
 	Audio audio = Audio();
+	Menu menu = Menu();
 
 	// Load addons for allegro	
 	al_install_keyboard();
@@ -71,102 +74,8 @@ int main(int argc, char **argv)
 		al_wait_for_event(event_queue, &ev);		
 
 		if(ev.type == ALLEGRO_EVENT_TIMER){
-			if(ev.timer.source == FPSTimer) {
-				if (menuBool) {
-					if(audio.isInGamePlaying())
-						audio.stopLoopInGame();
-
-					if(!audio.isMenuPlaying())
-						audio.loopMenu();
-
-					draw.menu(menuSelect);
-
-					// flip backbuffer to screen and empty old screen which is now in backbuffer
-					al_flip_display();
-					al_clear_to_color(al_map_rgb(0, 0, 0));	
-				}
-
-				if (!menuBool && start) {
-					if(audio.isMenuPlaying())
-						audio.stopLoopMenu();
-
-					if(!audio.isInGamePlaying())
-						audio.loopInGame();
-
-					start = false;
-
-					ground[0].start();
-					for (int j = 1; j != gMax; j++){
-						ground[j].create(ground[gMax - 1].getX(), ground[gMax - 1].getY(), ground[gMax - 1].getLenght());
-						draw.ground(ground[j].getX(), ground[j].getY());
-					}
-
-					player.start();
-
-					// draw player, ground and text to backbuffer
-					draw.player(player.getX(), player.getY());
-
-					// flip backbuffer to screen and empty old screen which is now in backbuffer
-					al_flip_display();
-					al_clear_to_color(al_map_rgb(0, 0, 0));	
-
-					al_start_timer(scoreTimer);
-					al_start_timer(downTimer);
-					al_start_timer(speedTimer);
-				}
-
-				// Check if game is still running
-				if (!isGameOver && !menuBool) {		
-					// Do this if player is jumping
-					/*if (player.getJump()) {
-						tempJumpTime += 1;
-						if (tempJumpTime <= jumpTime){
-							if (player.getY() - pSize != 0)
-								player.moveUp();
-							} else {
-								tempJumpTime = 0;
-								player.setJump(false);
-							}
-					}*/
-
-					// If player isn't jumping and isn't on ground then move down
-					/*if (!player.getJump() && player.getGround())
-						player.moveDown();*/
-
-
-					// Add speed only once in specific score
-					/*if (tempScore != player.getScore()){
-						if (player.getScore() % speedScore == 0){
-							player.addSpeed();
-						}
-					}
-					tempScore = player.getScore();*/
-
-					// check if player has dropped to bottom
-					if (player.getY() + draw.picHeight() >= HEIGHT) {
-						isGameOver = true;
-						audio.death();
-					};		
-				
-					// Update all ground positions and draw them to backbuffer
-					player.setGround(false);
-
-					for (int j = 0; j != gMax; j++){											
-						draw.ground(ground[j].getX(),ground[j].getY());
-					}
-
-					// draw player and text to backbuffer
-					draw.player(player.getX(), player.getY());
-					draw.gameText(player.getScore(), player.getSpeed());
-
-				} if(isGameOver) {
-					// Draw end text to backbuffer
-					draw.endText(player.getScore());
-				}		
-
-				al_flip_display();
-				al_clear_to_color(al_map_rgb(0,0,0));
-			}
+			if(ev.timer.source == FPSTimer)
+				redraw = true;				
 			
 			if (!isGameOver && !menuBool) {
 				if(al_get_timer_started(upTimer)){
@@ -237,9 +146,10 @@ int main(int argc, char **argv)
 							}
 							case(2):{
 								settingsBool = true;
+								menu.setAnimState(true);
 							}
 							case(3):{
-								done = true;
+								//done = true;
 							}
 						}
 					}					
@@ -261,6 +171,103 @@ int main(int argc, char **argv)
 				}
 			}
 		}
+
+		if(redraw && al_is_event_queue_empty(event_queue)) {
+         redraw = false;
+         if (menuBool) {
+					if(audio.isInGamePlaying())
+						audio.stopLoopInGame();
+
+					if(!audio.isMenuPlaying())
+						audio.loopMenu();
+
+					if(settingsBool){
+						//menu.animateUp();
+						draw.mainMenu(menuSelect, menu.getPlayY(), menu.getSettingsY(), menu.getQuitY());
+					} else {
+						//menu.animateDown();
+						draw.mainMenu(menuSelect, menu.getPlayY(), menu.getSettingsY(), menu.getQuitY());
+					}
+				} 
+
+				if (!menuBool && start) {
+					if(audio.isMenuPlaying())
+						audio.stopLoopMenu();
+
+					if(!audio.isInGamePlaying())
+						audio.loopInGame();
+
+					start = false;
+
+					ground[0].start();
+					for (int j = 1; j != gMax; j++){
+						ground[j].create(ground[gMax - 1].getX(), ground[gMax - 1].getY(), ground[gMax - 1].getLenght());
+						draw.ground(ground[j].getX(), ground[j].getY());
+					}
+
+					player.start();
+
+					// draw player, ground and text to backbuffer
+					draw.player(player.getX(), player.getY());
+
+					al_start_timer(scoreTimer);
+					al_start_timer(downTimer);
+					al_start_timer(speedTimer);
+				}
+
+				// Check if game is still running
+				if (!isGameOver && !menuBool) {		
+					// Do this if player is jumping
+					/*if (player.getJump()) {
+						tempJumpTime += 1;
+						if (tempJumpTime <= jumpTime){
+							if (player.getY() - pSize != 0)
+								player.moveUp();
+							} else {
+								tempJumpTime = 0;
+								player.setJump(false);
+							}
+					}*/
+
+					// If player isn't jumping and isn't on ground then move down
+					/*if (!player.getJump() && player.getGround())
+						player.moveDown();*/
+
+
+					// Add speed only once in specific score
+					/*if (tempScore != player.getScore()){
+						if (player.getScore() % speedScore == 0){
+							player.addSpeed();
+						}
+					}
+					tempScore = player.getScore();*/
+
+					// check if player has dropped to bottom
+					if (player.getY() + draw.picHeight() >= HEIGHT) {
+						isGameOver = true;
+						audio.death();
+					};		
+				
+					// Update all ground positions and draw them to backbuffer
+					player.setGround(false);
+
+					for (int j = 0; j != gMax; j++){											
+						draw.ground(ground[j].getX(),ground[j].getY());
+					}
+
+					// draw player and text to backbuffer
+					draw.player(player.getX(), player.getY());
+					draw.gameText(player.getScore(), player.getSpeed());
+
+				} if(isGameOver) {
+					// Draw end text to backbuffer
+					draw.endText(player.getScore());
+				}		
+
+			al_flip_display();
+			al_clear_to_color(al_map_rgb(0,0,0));
+		}
+		
 	}
 
 	// Destroy everything from memory
