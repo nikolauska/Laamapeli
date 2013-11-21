@@ -54,28 +54,9 @@ Draw::Draw(){
 	//Initializing pictures
 	lamapic = al_load_bitmap("Data/Pictures/lamapic.png");
 	groundpic = al_load_bitmap("Data/Pictures/ground.png");
-
-	//Ingame Background pictures
-	bg5760 = al_load_bitmap("Data/Pictures/bg5760.png");
 	bg1080 = al_load_bitmap("Data/Pictures/bg1080.png");
-	bg720 = al_load_bitmap("Data/Pictures/bg720.png");
-	bg480 = al_load_bitmap("Data/Pictures/bg480.png");
-	bg360 = al_load_bitmap("Data/Pictures/bg360.png");
-
-	//Menu Background pictures
-	menubg5760 = al_load_bitmap("Data/Pictures/menubg5760.png");
 	menubg1080 = al_load_bitmap("Data/Pictures/menubg1080.png");
-	menubg720 = al_load_bitmap("Data/Pictures/menubg720.png");
-	menubg480 = al_load_bitmap("Data/Pictures/menubg480.png");
-	menubg360 = al_load_bitmap("Data/Pictures/menubg360.png");
-
-
-	//End Background pictures
-	endbg5760 = al_load_bitmap("Data/Pictures/endbg5760.png");
 	endbg1080 = al_load_bitmap("Data/Pictures/endbg1080.png");
-	endbg720 = al_load_bitmap("Data/Pictures/endbg720.png");
-	endbg480 = al_load_bitmap("Data/Pictures/endbg480.png");
-	endbg360 = al_load_bitmap("Data/Pictures/endbg360.png");
 }
 
 void Draw::player(int x, int y){
@@ -93,61 +74,24 @@ void Draw::ground(int x, int y){
 }
 
 
+
 void Draw::bg(){
-	if(WIDTH == 5760)
-		al_draw_bitmap(bg5760, 0, 0, NULL);
-
-	else if(WIDTH == 1920)
-		al_draw_bitmap(bg1080, 0, 0, NULL);
-
-	else if(WIDTH == 1280)
-		al_draw_bitmap(bg720, 0, 0, NULL);
-
-	else if(WIDTH == 853)
-		al_draw_bitmap(bg480, 0, 0, NULL);
-
-	else if(WIDTH == 639)
-		al_draw_bitmap(bg360, 0, 0, NULL);
+	al_draw_scaled_bitmap(bg1080, 0, 0, 1920, 1080, 0, 0, WIDTH, HEIGHT, NULL);
 }
 
 void Draw::endText(int score){
-	if(WIDTH == 5760)
-		al_draw_bitmap(endbg5760, 0, 0, NULL);
-
-	else if(WIDTH == 1920)
-		al_draw_bitmap(endbg1080, 0, 0, NULL);
-
-	else if(WIDTH == 1280)
-		al_draw_bitmap(endbg720, 0, 0, NULL);
-
-	else if(WIDTH == 853)
-		al_draw_bitmap(endbg480, 0, 0, NULL);
-
-	else if(WIDTH == 639)
-		al_draw_bitmap(endbg360, 0, 0, NULL);
+	al_draw_scaled_bitmap(endbg1080, 0, 0, 1920, 1080, 0, 0, WIDTH, HEIGHT, NULL);
 
 	al_draw_textf(font18, al_map_rgb(255, 0, 0), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i", score);
 }
 
 void Draw::gameText(int score, int speed){
-	al_draw_textf(font18, al_map_rgb(255, 0, 0), 5, 10, 0, "Score: %i             Speed: %i", score, speed);
+	al_draw_textf(font18, al_map_rgb(255, 0, 0), 5, 10, 0, "Score: %i", score);
+	al_draw_textf(font18, al_map_rgb(255, 0, 0), 5, 40, 0, "Speed: %i", speed);
 }
 
 void Draw::mainMenu(int selection, int playY, int settingsY, int quitY){
-	if(WIDTH == 5760)
-		al_draw_bitmap(menubg5760, 0, 0, NULL);
-
-	else if(WIDTH == 1920)
-		al_draw_bitmap(menubg1080, 0, 0, NULL);
-
-	else if(WIDTH == 1280)
-		al_draw_bitmap(menubg720, 0, 0, NULL);
-
-	else if(WIDTH == 853)
-		al_draw_bitmap(menubg480, 0, 0, NULL);
-
-	else if(WIDTH == 639)
-		al_draw_bitmap(menubg360, 0, 0, NULL);
+	al_draw_scaled_bitmap(menubg1080, 0, 0, 1920, 1080, 0, 0, WIDTH, HEIGHT, NULL);
 
 	al_draw_text(font18, al_map_rgb(255, 0, 0), menuPlayGamePosX, playY, ALLEGRO_ALIGN_CENTER, "Play game");
 	al_draw_text(font18, al_map_rgb(255, 0, 0), menuSettingsPosX, settingsY, ALLEGRO_ALIGN_CENTER, "Settings");
@@ -191,16 +135,9 @@ void Draw::mainMenu(int selection, int playY, int settingsY, int quitY){
 	al_destroy_font(font42);
 	al_destroy_bitmap(lamapic);
 	al_destroy_bitmap(groundpic);
-	al_destroy_bitmap(bg5760);
 	al_destroy_bitmap(bg1080);
-	al_destroy_bitmap(bg720);
-	al_destroy_bitmap(bg480);
-	al_destroy_bitmap(bg360);
-	al_destroy_bitmap(menubg5760);
 	al_destroy_bitmap(menubg1080);
-	al_destroy_bitmap(menubg720);
-	al_destroy_bitmap(menubg480);
-	al_destroy_bitmap(menubg360);
+	al_destroy_bitmap(endbg1080);
 	}
 
 
