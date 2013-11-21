@@ -54,7 +54,7 @@ void Ground::create(int lastX, int lastY, int lastLenght){
 				this->y = gPosY4;
 
 	tempLenght = rand() % 300 + 100;
-	tempX = lastX + lastLenght + tempLenght + (rand() % 50 + pSize);
+	tempX = lastX + 300 + tempLenght;
 
 	this->lenght = tempLenght;
 	this->x = tempX;

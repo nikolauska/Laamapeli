@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 				if(al_get_timer_started(speedTimer)){
 					if(al_get_timer_count(speedTimer) >= (1/player.getSpeed())) {
 						for (int j = 0; j != gMax; j++){
-							if (ground[j].getX() <= 0)
+							if (ground[j].getX() + 300 <= 0)
 								if (j > 0)
 									ground[j].create(ground[j - 1].getX(), ground[j - 1].getY(), ground[j - 1].getLenght());
 								else
@@ -178,6 +178,7 @@ int main(int argc, char **argv)
 					if(audio.isInGamePlaying())
 						audio.stopLoopInGame();
 
+
 					if(!audio.isMenuPlaying())
 						audio.loopMenu();
 
@@ -216,7 +217,8 @@ int main(int argc, char **argv)
 				}
 
 				// Check if game is still running
-				if (!isGameOver && !menuBool) {		
+				if (!isGameOver && !menuBool) {	
+					draw.bg();
 					// Do this if player is jumping
 					/*if (player.getJump()) {
 						tempJumpTime += 1;
@@ -245,6 +247,7 @@ int main(int argc, char **argv)
 					// check if player has dropped to bottom
 					if (player.getY() + draw.picHeight() >= HEIGHT) {
 						isGameOver = true;
+						audio.stopLoopInGame();
 						audio.death();
 					};		
 				

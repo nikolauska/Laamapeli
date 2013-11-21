@@ -14,8 +14,8 @@
 using namespace std;
 
 //Screen variables
-const int WIDTH = 1024; // Screen width
-const int HEIGHT = 768; // Screen height	
+const int WIDTH = 1280; // Screen width
+const int HEIGHT = 720; // Screen height	
 const int FPS = 60; // Frames-per-second
 
 //Menu Variables
