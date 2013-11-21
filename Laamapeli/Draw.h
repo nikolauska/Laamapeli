@@ -6,24 +6,9 @@ ALLEGRO_FONT *font18 = NULL;
 ALLEGRO_FONT *font42 = NULL;
 ALLEGRO_BITMAP *lamapic = NULL;
 ALLEGRO_BITMAP *groundpic = NULL;
-
-ALLEGRO_BITMAP *bg5760 = NULL;
 ALLEGRO_BITMAP *bg1080 = NULL;
-ALLEGRO_BITMAP *bg720 = NULL;
-ALLEGRO_BITMAP *bg480 = NULL;
-ALLEGRO_BITMAP *bg360 = NULL;
-
-ALLEGRO_BITMAP *menubg5760 = NULL;
 ALLEGRO_BITMAP *menubg1080 = NULL;
-ALLEGRO_BITMAP *menubg720 = NULL;
-ALLEGRO_BITMAP *menubg480 = NULL;
-ALLEGRO_BITMAP *menubg360 = NULL;
-
-ALLEGRO_BITMAP *endbg5760 = NULL;
 ALLEGRO_BITMAP *endbg1080 = NULL;
-ALLEGRO_BITMAP *endbg720 = NULL;
-ALLEGRO_BITMAP *endbg480 = NULL;
-ALLEGRO_BITMAP *endbg360 = NULL;
 
 class Draw{
 	public:
@@ -76,6 +61,7 @@ void Draw::ground(int x, int y){
 
 
 void Draw::bg(){
+	//bitmap, source x, source y, source width, source height, destination x, destination y, destination width, destination height, flags
 	al_draw_scaled_bitmap(bg1080, 0, 0, 1920, 1080, 0, 0, WIDTH, HEIGHT, NULL);
 }
 
