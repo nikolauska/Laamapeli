@@ -29,11 +29,6 @@ void Ground::start(){
 // Create ground on the run
 void Ground::create(int lastX, int lastY){
 	srand(time(NULL));
-
-	int tempY = 0;
-	int tempX = 0;
-	int tempLenght = 0;
-
 		
 	if (lastY == gPosY1)
 		this->y = gPosY2;
@@ -51,8 +46,7 @@ void Ground::create(int lastX, int lastY){
 			else
 				this->y = gPosY4;
 
-	tempLenght = rand() % 200 + 100;
-	tempX = lastX + 300 + tempLenght;
+	this->x = lastX + 600 + (rand() % 200 + 100);
 }
 
 // Move ground to left
