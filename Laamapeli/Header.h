@@ -12,7 +12,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <vector>
-//#include <iterator>
 using namespace std;
 
 //Screen variables

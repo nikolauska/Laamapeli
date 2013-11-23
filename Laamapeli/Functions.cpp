@@ -20,7 +20,7 @@ int menuSelect = 1;
 bool isGameOver = false;
 bool redraw = false;
 bool start = true;
-bool menuBool = true;
+bool menuBool = false;
 bool settingsBool = false;
 
 //Allegro variables
@@ -36,8 +36,8 @@ ALLEGRO_DISPLAY *display = NULL;
 Player *player = NULL;
 vector<Ground> groundVector;
 Ground *ground;
-vector<Ground>::iterator it;
-vector<Ground>::iterator tempIt;
+vector<Ground>::reverse_iterator it;
+vector<Ground>::reverse_iterator tempIt;
 Draw *draw = NULL;
 Audio *audio = NULL;
 Menu *menu = NULL;
@@ -102,7 +102,7 @@ int initialize(){
 
 void groundInitialize() {
 	ground = new Ground();
-	
+	ground->start();
 	groundVector.push_back(*ground);
 	delete ground;
 
@@ -113,10 +113,9 @@ void groundInitialize() {
 		delete ground;
 	}
 
-	for (it = groundVector.begin() + 1; it != groundVector.end(); it++){
-		it->create(prev(it)->getX(), prev(it)->getY());
+	for (it = groundVector.rbegin() + 1; it != groundVector.rend(); it++){
+		it->create((it - 1)->getX(), (it - 1)->getY());
 	}
-	groundVector.begin()->start();
 
 	// Start timers
 	al_start_timer(FPSTimer);
@@ -131,7 +130,7 @@ void groundInitialize() {
 
 void destroy(){
 	// Destroy all classes from vector
-	for (it = groundVector.begin(); it != groundVector.end(); it++){
+	for (it = groundVector.rbegin(); it != groundVector.rend(); it++){
 		it->~Ground();
 	}
 
@@ -198,17 +197,26 @@ void scoreTimerEvent(ALLEGRO_EVENT ev) {
 void speedTimerEvent(){
 	if(al_get_timer_started(speedTimer)){
 		if(al_get_timer_count(speedTimer) >= (1/player->getSpeed())) {
-			for (it = begin(groundVector); it != end(groundVector); it++){
+			for (it = groundVector.rbegin(); it != groundVector.rend(); it++){
 						
 				if (it->getX() + 300 <= 0)
-					if(it != groundVector.begin())
-						it->create(prev(it)->getX(), prev(it)->getY());						
+					if(it != groundVector.rbegin())
+						it->create((it - 1)->getX(), (it - 1)->getY());
 							
-				if(it->groundCheck(player->getX(), player->getY()))
+				if((groundVector.rbegin() + 2)->groundCheck(player->getX(), player->getY()))
 					player->setGround(true);
 											
 				it->move(player->getSpeed());
-			}				
+			}
+
+			it = groundVector.rend();
+			int tempX = it->getX();
+			int tempY = it->getY();
+
+			it = groundVector.rbegin();
+			if (it->getX() + 300 <= 0){
+				it->create(tempX, tempY);
+			}
 		}
 	}
 }
@@ -276,7 +284,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 			}
 			// ENTER button
 			case ALLEGRO_KEY_ENTER:{
-				if(menuBool && !settingsBool){
+				if(!settingsBool){
 					switch (menuSelect){
 						case(1):{
 							menuBool = false;
@@ -292,12 +300,14 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 							break;
 						}
 					}
-				} else if(settingsBool){
+				} else {
 					switch(menuSelect){
 						case(1):{
+							menuBool = false;
 							break;
 						}
 						case(2):{
+							settingsBool = true;
 							break;
 						}
 						case(3):{
@@ -306,12 +316,8 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 							break;
 						}
 					}
-				} else if(isGameOver){
-					isGameOver = false;
-					menuBool = true;
-					settingsBool = false;
+					break;
 				}
-
 				// DOWN button
 				case ALLEGRO_KEY_DOWN:{
 					if (menuBool) {
@@ -402,7 +408,7 @@ void drawEvent(){
 		player->setGround(false);
 		
 		// Draw grounds to screen
-		for (it = groundVector.begin(); it != groundVector.end(); it++){											
+		for (it = groundVector.rbegin(); it != groundVector.rend(); it++){											
 			draw->ground(it->getX(), it->getY());
 		}
 
@@ -436,11 +442,11 @@ bool Events(){
 
 	timerEvent(ev);
 
-	if(displayCloseEvent(ev))
-		return true;
+	done = displayCloseEvent(ev);
 
-	if(keyPressEvent(ev))
-		return true;
+	done = keyPressEvent(ev);
 	
 	drawEvent();
+
+	return done;
 }
