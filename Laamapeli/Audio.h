@@ -38,7 +38,7 @@ Audio::Audio(){
 	al_install_audio();
 	al_init_acodec_addon();
 
-	menuSong = al_load_sample("Data\\Audio\\menu.ogg");
+	menuSong = al_load_sample("Data\\Audio\\ambient.ogg");
 	inGameSong = al_load_sample("Data\\Audio\\llama_song.ogg");
 	njak = al_load_sample("Data\\Audio\\njak.ogg");
 	die = al_load_sample("Data\\Audio\\llama_is_kill.ogg");

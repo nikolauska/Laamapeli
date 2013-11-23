@@ -9,6 +9,7 @@ ALLEGRO_BITMAP *groundpic = NULL;
 ALLEGRO_BITMAP *bg1080 = NULL;
 ALLEGRO_BITMAP *menubg1080 = NULL;
 ALLEGRO_BITMAP *endbg1080 = NULL;
+ALLEGRO_BITMAP *msel = NULL;
 
 class Draw{
 	public:
@@ -42,6 +43,7 @@ Draw::Draw(){
 	bg1080 = al_load_bitmap("Data/Pictures/bg1080.png");
 	menubg1080 = al_load_bitmap("Data/Pictures/menubg1080.png");
 	endbg1080 = al_load_bitmap("Data/Pictures/endbg1080.png");
+	msel = al_load_bitmap("Data/Pictures/selection.png");
 }
 
 void Draw::player(int x, int y){
@@ -93,7 +95,9 @@ void Draw::mainMenu(int selection, int playY, int settingsY, int quitY){
 		int x2 = menuPlayGamePosX + 50;
 		int y2 = menuPlayGamePosY + 25;
 
-		al_draw_line(x1, y1, x2, y2, al_map_rgb(255, 0, 0), 5);
+		//al_draw_line(x1, y1, x2, y2, al_map_rgb(255, 0, 0), 5);
+		al_draw_bitmap(msel, (WIDTH/2)+75,((HEIGHT/8)*3)-14, NULL);
+		al_draw_bitmap(msel, (WIDTH/2)-115,((HEIGHT/8)*3)-14, ALLEGRO_FLIP_HORIZONTAL);
 	} 
 	else if(selection == 2) {	
 		int x1 = menuSettingsPosX - 50;
@@ -102,7 +106,9 @@ void Draw::mainMenu(int selection, int playY, int settingsY, int quitY){
 		int x2 = menuSettingsPosX + 50;
 		int y2 = menuSettingsPosY + 25;
 
-		al_draw_line(x1, y1, x2, y2, al_map_rgb(255, 0, 0), 5);
+		//al_draw_line(x1, y1, x2, y2, al_map_rgb(255, 0, 0), 5);
+		al_draw_bitmap(msel, (WIDTH/2)+55,((HEIGHT/8)*4)-14, NULL);
+		al_draw_bitmap(msel, (WIDTH/2)-95,((HEIGHT/8)*4)-14, ALLEGRO_FLIP_HORIZONTAL);
 	}
 	else if(selection == 3) {
 		int x1 = menuExitPosX - 50;
@@ -111,7 +117,9 @@ void Draw::mainMenu(int selection, int playY, int settingsY, int quitY){
 		int x2 = menuExitPosX + 50;
 		int y2 = menuExitPosY + 25;
 
-		al_draw_line(x1, y1, x2, y2, al_map_rgb(255, 0, 0), 5);
+		//al_draw_line(x1, y1, x2, y2, al_map_rgb(255, 0, 0), 5);
+		al_draw_bitmap(msel, (WIDTH/2)+20,((HEIGHT/8)*5)-14, NULL);
+		al_draw_bitmap(msel, (WIDTH/2)-65,((HEIGHT/8)*5)-14, ALLEGRO_FLIP_HORIZONTAL);
 	}
 
 }
