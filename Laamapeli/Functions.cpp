@@ -280,6 +280,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 						case(2):{
 							settingsBool = true;
 							menu->setAnimState(true);
+							menuSelect = 1;
 							break;
 						}
 						case(3):{
@@ -292,16 +293,19 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 						case(1):{
 							graphicsBool = true;
 							menu->setAnimState(true);
+							menuSelect = 1;
 							break;
 						}
 						case(2):{
 							audioBool = true;
 							menu->setAnimState(true);
+							menuSelect = 1;
 							break;
 						}
 						case(3):{
 							settingsBool = false;
 							menu->setAnimState(true);
+							menuSelect = 1;
 							break;
 						}
 					}
@@ -317,6 +321,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 							graphicsBool = false;
 							backBool = true;
 							menu->setAnimState(true);
+							menuSelect = 1;
 							break;
 						}
 					}
@@ -333,6 +338,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 							audioBool = false;
 							backBool = true;
 							menu->setAnimState(true);
+							menuSelect = 1;
 							break;
 						}
 					}
@@ -396,8 +402,7 @@ void drawEvent(){
 			} else {
 				menu->animateDown();
 			}
-
-			draw->mainMenu(menuSelect, menu->getPlayY(), menu->getSettingsY(), menu->getQuitY(), menu->getPlayX(), menu->getSettingsX(), menu->getQuitX());
+			draw->mainMenu(menuSelect, menu->getPlayY(), menu->getSettingsY(), menu->getQuitY(), menu->getPlayX(), menu->getSettingsX(), menu->getQuitX(), menuBool, settingsBool, audioBool, graphicsBool, backBool);
 		} 
 
 		// Starting game
