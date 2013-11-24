@@ -23,7 +23,7 @@ class Draw{
 		void endText(int);
 		void gameText(int, int);
 
-		void mainMenu(int, int, int, int);
+		void mainMenu(int, int, int, int, int, int, int);
 
 		int picHeight(){return al_get_bitmap_height(lamapic);}
 };
@@ -78,15 +78,22 @@ void Draw::gameText(int score, int speed){
 	al_draw_textf(font18, al_map_rgb(255, 0, 0), 5, 40, 0, "Speed: %i", speed);
 }
 
-void Draw::mainMenu(int selection, int playY, int settingsY, int quitY){
+void Draw::mainMenu(int selection, int playY, int settingsY, int quitY, int playX, int settingsX, int quitX){
 	al_draw_scaled_bitmap(menubg1080, 0, 0, 1920, 1080, 0, 0, WIDTH, HEIGHT, NULL);
 
-	al_draw_text(font18, al_map_rgb(255, 0, 0), menuPlayGamePosX, playY, ALLEGRO_ALIGN_CENTER, "Play game");
-	al_draw_text(font18, al_map_rgb(255, 0, 0), menuSettingsPosX, settingsY, ALLEGRO_ALIGN_CENTER, "Settings");
-	al_draw_text(font18, al_map_rgb(255, 0, 0), menuExitPosX, quitY, ALLEGRO_ALIGN_CENTER, "Quit");
-	al_draw_text(font18, al_map_rgb(255, 0, 0), menuPlayGamePosX, playY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Graphics");
-	al_draw_text(font18, al_map_rgb(255, 0, 0), menuSettingsPosX, settingsY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Audio");
-	al_draw_text(font18, al_map_rgb(255, 0, 0), menuExitPosX, quitY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Back");
+	al_draw_text(font18, al_map_rgb(255, 0, 0), playX, playY, ALLEGRO_ALIGN_CENTER, "Play game");
+	al_draw_text(font18, al_map_rgb(255, 0, 0), settingsX, settingsY, ALLEGRO_ALIGN_CENTER, "Settings");
+	al_draw_text(font18, al_map_rgb(255, 0, 0), quitX, quitY, ALLEGRO_ALIGN_CENTER, "Quit");
+	al_draw_text(font18, al_map_rgb(255, 0, 0), playX, playY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Graphics");
+	al_draw_text(font18, al_map_rgb(255, 0, 0), settingsX, settingsY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Audio");
+	al_draw_text(font18, al_map_rgb(255, 0, 0), quitX, quitY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Back");
+
+	al_draw_textf(font18, al_map_rgb(255, 0, 0), playX + WIDTH, playY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Resolution : %i X %i", WIDTH, HEIGHT);
+	al_draw_textf(font18, al_map_rgb(255, 0, 0), settingsX + WIDTH, settingsY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Display: Fullscreen");
+	al_draw_text(font18, al_map_rgb(255, 0, 0), quitX + WIDTH, quitY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Back");
+	al_draw_textf(font18, al_map_rgb(255, 0, 0), playX - WIDTH, playY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Volume: %i", 100);
+	al_draw_textf(font18, al_map_rgb(255, 0, 0), settingsX - WIDTH, settingsY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Mute: No");
+	al_draw_text(font18, al_map_rgb(255, 0, 0), quitX - WIDTH, quitY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Back");
 
 	if(selection == 1) {
 		int x1 = menuPlayGamePosX - 50;

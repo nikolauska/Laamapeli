@@ -13,15 +13,15 @@
 */
 
 // Local variables
-int tempJumpTime = 0;
-int tempPointTime = 0;
-int tempScore = 0;
 int menuSelect = 1;
 bool isGameOver = false;
 bool redraw = false;
 bool start = true;
 bool menuBool = true;
 bool settingsBool = false;
+bool audioBool = false;
+bool graphicsBool = false;
+bool backBool = false;
 
 //Allegro variables
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
@@ -262,11 +262,6 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 
 	if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
 		switch(ev.keyboard.keycode){
-			// ESC button
-			case ALLEGRO_KEY_ESCAPE:{
-				temp = true;
-				break;
-			}
 			// SPACE button
 			case ALLEGRO_KEY_SPACE:{
 				audio->jump();
@@ -292,12 +287,16 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 							break;
 						}
 					}
-				} else if(settingsBool){
+				} else if(settingsBool && !graphicsBool && !audioBool){
 					switch(menuSelect){
 						case(1):{
+							graphicsBool = true;
+							menu->setAnimState(true);
 							break;
 						}
 						case(2):{
+							audioBool = true;
+							menu->setAnimState(true);
 							break;
 						}
 						case(3):{
@@ -306,29 +305,64 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 							break;
 						}
 					}
+				} else if(graphicsBool){
+					switch(menuSelect){
+						case(1):{
+							break;
+						}
+						case(2):{
+							break;
+						}
+						case(3):{
+							graphicsBool = false;
+							backBool = true;
+							menu->setAnimState(true);
+							break;
+						}
+					}
+				} else if(audioBool){
+					switch(menuSelect){
+						case(1):{
+
+							break;
+						}
+						case(2):{
+							break;
+						}
+						case(3):{
+							audioBool = false;
+							backBool = true;
+							menu->setAnimState(true);
+							break;
+						}
+					}
 				} else if(isGameOver){
 					isGameOver = false;
 					menuBool = true;
 					settingsBool = false;
+					start = true;
 				}
-
-				// DOWN button
-				case ALLEGRO_KEY_DOWN:{
-					if (menuBool) {
-						if(menuSelect != 3)
-							menuSelect += 1;
-					}						
-					break;
-				}
-				// UP button
-				case ALLEGRO_KEY_UP:{
-					if (menuBool) {
-						if(menuSelect != 1)
-							menuSelect -= 1;
-					}						
-					break;
-				}
+				break;
 			}
+
+
+			// DOWN button
+			case ALLEGRO_KEY_DOWN:{
+				if (menuBool) {
+					if(menuSelect != 3)
+						menuSelect += 1;
+				}						
+				break;
+			}
+
+			// UP button
+			case ALLEGRO_KEY_UP:{
+				if (menuBool) {
+					if(menuSelect != 1)
+						menuSelect -= 1;
+				}						
+				break;
+			}			
 		}
 	}
 	return temp;
@@ -348,20 +382,22 @@ void drawEvent(){
 		// Menu draw
 		if (menuBool) {
 			// Menu music
-			if(audio->isInGamePlaying())
-				audio->stopLoopInGame();
-
 			if(!audio->isMenuPlaying())
 				audio->loopMenu();
 
 			// Settings
 			if(settingsBool){
-				menu->animateUp();
-				draw->mainMenu(menuSelect, menu->getPlayY(), menu->getSettingsY(), menu->getQuitY());
+				if(graphicsBool)
+					menu->animateGraphics();
+				else if(audioBool)
+					menu->animateAudio();
+				else if(menu->animateBack())
+					menu->animateUp();
 			} else {
 				menu->animateDown();
-				draw->mainMenu(menuSelect, menu->getPlayY(), menu->getSettingsY(), menu->getQuitY());
 			}
+
+			draw->mainMenu(menuSelect, menu->getPlayY(), menu->getSettingsY(), menu->getQuitY(), menu->getPlayX(), menu->getSettingsX(), menu->getQuitX());
 		} 
 
 		// Starting game

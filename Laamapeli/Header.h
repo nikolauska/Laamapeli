@@ -18,10 +18,11 @@ using namespace std;
 //Screen variables
 const int WIDTH = 1280; // Screen width
 const int HEIGHT = 720; // Screen height	
-const int FPS = 60; // Frames-per-second
+const int FPS = 120; // Frames-per-second
+const bool fullScreen = true;
 
 //Menu Variables
-const int menuSpeed = 5;
+const int menuSpeed = FPS / 20;
 const int menuPlayGamePosX = WIDTH / 2;
 const int menuPlayGamePosY = (HEIGHT / 8) * 3;
 const int menuSettingsPosX = WIDTH / 2;

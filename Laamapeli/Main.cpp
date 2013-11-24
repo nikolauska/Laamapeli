@@ -2,15 +2,7 @@
 void groundInitialize();
 int initialize();
 bool Events();
-void timerEvent();
-void upTimerEvent();
-void scoreTimerEvent();
-void speedTimerEvent();
-bool displayCloseEvent();
-bool keyPressEvent();
-void drawEvent();
 void destroy();
-bool done = false;
 
 /*
 *	Beginninng of main object!

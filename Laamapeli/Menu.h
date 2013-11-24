@@ -8,21 +8,39 @@ class Menu{
 		int settingsY;
 		int quitY;
 
-		int graphicsY;
-		int audioY;
-		int backY;
+		int playX;
+		int settingsX;
+		int quitX;
 	public:
-		Menu(){this->animating = false; this->playY = menuPlayGamePosY; this->settingsY = menuSettingsPosY; this->quitY = menuExitPosY;}
+		Menu();
 		~Menu(){}
 
 		void animateUp();
 		void animateDown();
+		void animateGraphics();
+		void animateAudio();
+		bool animateBack();
 		void setAnimState(bool anim){this->animating = anim;}
 
 		int getPlayY(){return this->playY;}
 		int getSettingsY(){return this->settingsY;}
 		int getQuitY(){return this->quitY;}
+
+		int getPlayX(){return this->playX;}
+		int getSettingsX(){return this->settingsX;}
+		int getQuitX(){return this->quitX;}
 };
+
+Menu::Menu(){
+	this->animating = false; 
+	this->playY = menuPlayGamePosY; 
+	this->settingsY = menuSettingsPosY; 
+	this->quitY = menuExitPosY;
+
+	this->playX = menuPlayGamePosX; 
+	this->settingsX = menuSettingsPosX; 
+	this->quitX = menuExitPosX;
+}
 
 void Menu::animateUp(){
 	if(this->animating == true){
@@ -49,9 +67,75 @@ void Menu::animateDown(){
 
 			this->animating = false;
 		} else {
-			this->graphicsY += menuSpeed; 
-			this->audioY += menuSpeed; 
-			this->backY += menuSpeed;		
+			this->playY += menuSpeed; 
+			this->settingsY += menuSpeed; 
+			this->quitY += menuSpeed;		
 		}
 	}
+}
+
+void Menu::animateAudio(){
+	if(this->animating == true){
+		if((this->playX - WIDTH) >= menuPlayGamePosX ){
+			this->playX = menuPlayGamePosX - WIDTH;
+			this->settingsX = menuSettingsPosX - WIDTH;
+			this->quitX = menuExitPosX - WIDTH;
+
+			this->animating = false;
+		} else {
+			this->playX += menuSpeed;
+			this->settingsX += menuSpeed;
+			this->quitX += menuSpeed;
+		}
+	}
+}
+
+void Menu::animateGraphics(){
+	if(this->animating == true){
+		if((this->playX + WIDTH) <= menuPlayGamePosX ){
+			this->playX = menuPlayGamePosX + WIDTH;
+			this->settingsX = menuSettingsPosX + WIDTH;
+			this->quitX = menuExitPosX + WIDTH;
+
+			this->animating = false;
+		} else {
+			this->playX -= menuSpeed;
+			this->settingsX -= menuSpeed;
+			this->quitX -= menuSpeed;
+		}
+	}
+}
+
+bool Menu::animateBack(){
+	if(this->animating == true && this->playX != menuPlayGamePosX){
+		if(this->playX >= menuPlayGamePosX){
+			this->playX -= menuSpeed;
+			this->settingsX -= menuSpeed;
+			this->quitX -= menuSpeed;
+			
+			if(this->playX <= menuPlayGamePosX){
+				this->playX = menuPlayGamePosX;
+				this->settingsX = menuSettingsPosX;
+				this->quitX = menuExitPosX;
+
+				this->animating = false;				
+			}
+			return false;
+			
+		} else if(this->playX <= menuPlayGamePosX){
+			this->playX += menuSpeed;
+			this->settingsX += menuSpeed;
+			this->quitX += menuSpeed;
+
+			if(this->playX >= menuPlayGamePosX){
+				this->playX = menuPlayGamePosX;
+				this->settingsX = menuSettingsPosX;
+				this->quitX = menuExitPosX;
+
+				this->animating = false;				
+			}
+			return false;
+		}
+	}
+	return true;
 }
