@@ -391,18 +391,24 @@ void drawEvent(){
 			if(!audio->isMenuPlaying())
 				audio->loopMenu();
 
+			draw->mainMenu(menu->getPlayY(), menu->getSettingsY(), menu->getQuitY(), menu->getPlayX(), menu->getSettingsX(), menu->getQuitX());
+
 			// Settings
 			if(settingsBool){
-				if(graphicsBool)
+				if(graphicsBool){
 					menu->animateGraphics();
-				else if(audioBool)
+					draw->selectorsGraphics(menuSelect);
+				}else if(audioBool){
 					menu->animateAudio();
-				else if(menu->animateBack())
+					draw->selectorsAudio(menuSelect);
+				}else if(menu->animateBack()){
 					menu->animateUp();
+					draw->selectorsSettings(menuSelect);
+				}
 			} else {
 				menu->animateDown();
+				draw->selectorsMain(menuSelect);
 			}
-			draw->mainMenu(menuSelect, menu->getPlayY(), menu->getSettingsY(), menu->getQuitY(), menu->getPlayX(), menu->getSettingsX(), menu->getQuitX(), menuBool, settingsBool, audioBool, graphicsBool, backBool);
 		} 
 
 		// Starting game

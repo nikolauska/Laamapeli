@@ -13,7 +13,6 @@
 #include <time.h>
 #include <vector>
 #include <string>
-#include <string.h>
 //#include <iterator>
 using namespace std;
 
