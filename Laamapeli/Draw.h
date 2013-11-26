@@ -2,31 +2,23 @@
 #define drawDEF
 #include "Header.h"
 
-ALLEGRO_FONT *font18 = NULL;
-ALLEGRO_FONT *font42 = NULL;
-ALLEGRO_BITMAP *lamapic = NULL;
-ALLEGRO_BITMAP *groundpic = NULL;
-ALLEGRO_BITMAP *bg1080 = NULL;
-ALLEGRO_BITMAP *menubg1080 = NULL;
-ALLEGRO_BITMAP *endbg1080 = NULL;
-ALLEGRO_BITMAP *msel = NULL;
+ALLEGRO_FONT *font18;
+ALLEGRO_FONT *font42;
+ALLEGRO_BITMAP *lamapic;
+ALLEGRO_BITMAP *groundpic;
+ALLEGRO_BITMAP *bg1080;
+ALLEGRO_BITMAP *menubg1080;
+ALLEGRO_BITMAP *endbg1080;
+ALLEGRO_BITMAP *msel;
+
+const char* text1C;
+const char* text2C;
+const char* text3C;
+string text1 = "";
+string text2 = "";
+string text3 = "";
 
 class Draw{
-	private:
-		int pW;
-		int sW;
-		int qW;
-
-		int gW;
-		int aW;
-		int bW;
-
-		int rW;
-		int dW;
-
-		int vW;
-		int mW;
-
 	public:
 		Draw();
 		~Draw();
@@ -35,16 +27,10 @@ class Draw{
 		void ground(int, int);
 		void bg();
 
-
 		void endText(int);
 		void gameText(int, int);
 
-		void mainMenu(int, int, int, int, int, int);
-
-		void selectorsMain(int);
-		void selectorsSettings(int);
-		void selectorsGraphics(int);
-		void selectorsAudio(int);
+		void menu(int, int);
 
 		int picHeight(){return al_get_bitmap_height(lamapic);}
 		int picWidth(){return al_get_bitmap_width(lamapic);}
@@ -57,8 +43,8 @@ Draw::Draw(){
 	al_init_primitives_addon();
 	al_init_image_addon();
 	
-	font18 = al_load_font("blood.ttf", 24, 0);
-	font42 = al_load_font("blood.ttf", 42, 0);
+	font18 = al_load_font("Data/Font/blood.ttf", 24, 0);
+	font42 = al_load_font("Data/Font/blood.ttf", 42, 0);
 
 	//Initializing pictures
 	lamapic = al_load_bitmap("Data/Pictures/lamapic.png");
@@ -67,30 +53,6 @@ Draw::Draw(){
 	menubg1080 = al_load_bitmap("Data/Pictures/menubg1080.png");
 	endbg1080 = al_load_bitmap("Data/Pictures/endbg1080.png");
 	msel = al_load_bitmap("Data/Pictures/selection.png");
-
-	this->pW = al_get_text_width(font18,"Play Game");
-	this->sW = al_get_text_width(font18,"Settings");
-	this->qW = al_get_text_width(font18,"Quit");
-
-	this->gW = al_get_text_width(font18,"Graphics");
-	this->aW = al_get_text_width(font18,"Audio");
-	this->bW = al_get_text_width(font18,"Back");
-
-	string temp = "Resolution: ";
-	temp += to_string(WIDTH) + " X " + to_string(HEIGHT);
-	this->rW = al_get_text_width(font18, temp.c_str());
-
-	temp = "Display: ";
-	temp += "FullScreen";
-	this->dW = al_get_text_width(font18,temp.c_str());
-
-	temp = "Volume: ";
-	temp += "100";
-	this->vW = al_get_text_width(font18,temp.c_str());
-
-	temp = "Mute: ";
-	temp += "No";
-	this->mW = al_get_text_width(font18,temp.c_str());
 }
 
 void Draw::player(int x, int y){
@@ -125,98 +87,58 @@ void Draw::gameText(int score, int speed){
 	al_draw_textf(font18, al_map_rgb(255, 0, 0), 5, 40, 0, "Speed: %i", speed);
 }
 
-void Draw::mainMenu(int playY, int settingsY, int quitY, int playX, int settingsX, int quitX){
+void Draw::menu(int menu, int selection){
 	al_draw_scaled_bitmap(menubg1080, 0, 0, 1920, 1080, 0, 0, WIDTH, HEIGHT, NULL);
 
-	al_draw_text(font18, al_map_rgb(255, 0, 0), playX, playY, ALLEGRO_ALIGN_CENTER, "Play game");
-	al_draw_text(font18, al_map_rgb(255, 0, 0), settingsX, settingsY, ALLEGRO_ALIGN_CENTER, "Settings");
-	al_draw_text(font18, al_map_rgb(255, 0, 0), quitX, quitY, ALLEGRO_ALIGN_CENTER, "Quit");
-
-	al_draw_text(font18, al_map_rgb(255, 0, 0), playX, playY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Graphics");
-	al_draw_text(font18, al_map_rgb(255, 0, 0), settingsX, settingsY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Audio");
-	al_draw_text(font18, al_map_rgb(255, 0, 0), quitX, quitY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Back");
-
-	al_draw_textf(font18, al_map_rgb(255, 0, 0), playX + WIDTH, playY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Resolution : %i X %i", WIDTH, HEIGHT);
-	al_draw_textf(font18, al_map_rgb(255, 0, 0), settingsX + WIDTH, settingsY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Display: Fullscreen");
-	al_draw_text(font18, al_map_rgb(255, 0, 0), quitX + WIDTH, quitY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Back");
-
-	al_draw_textf(font18, al_map_rgb(255, 0, 0), playX - WIDTH, playY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Volume: %i", 100);
-	al_draw_textf(font18, al_map_rgb(255, 0, 0), settingsX - WIDTH, settingsY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Mute: No");
-	al_draw_text(font18, al_map_rgb(255, 0, 0), quitX - WIDTH, quitY + HEIGHT, ALLEGRO_ALIGN_CENTER, "Back");
-}
-
-void Draw::selectorsMain(int selection){
-	switch(selection){
+	switch(menu){
 		case(1):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->pW/2), menuPlayGamePosY -14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->pW/2) - (picWidth()/2.7), menuPlayGamePosY -14, ALLEGRO_FLIP_HORIZONTAL);
+			text1 = "Play game";
+			text2 = "Settings";
+			text3 = "Quit";
 			break;
 		}
 		case(2):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->sW/2), menuSettingsPosY -14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->sW/2) - (picWidth()/2.7), menuSettingsPosY -14, ALLEGRO_FLIP_HORIZONTAL);
+			text1 = "Graphics";
+			text2 = "Audio";
+			text3 = "Back";
 			break;
 		}
 		case(3):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->qW/2), menuExitPosY -14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->qW/2) - (picWidth()/2.7), menuExitPosY -14, ALLEGRO_FLIP_HORIZONTAL);
+			text1 = "Resolution :" + to_string(WIDTH) + "X" + to_string(HEIGHT);
+			text2 = "Display: Fullscreen";
+			text3 = "Back";
+			break;
+		}
+		case(4):{
+			text1 = "Volume: " + to_string(volume);
+			text2 = "Mute: No";
+			text3 = "Back";
 			break;
 		}
 	}
-}
-void Draw::selectorsSettings(int selection){
+
+	text1C = text1.c_str();
+	text2C = text2.c_str();
+	text3C = text3.c_str();
+
+	al_draw_text(font18, al_map_rgb(255, 0, 0), menuPos1X, menuPos1Y, ALLEGRO_ALIGN_CENTER, text1C);
+	al_draw_text(font18, al_map_rgb(255, 0, 0), menuPos2X, menuPos2Y, ALLEGRO_ALIGN_CENTER, text2C);
+	al_draw_text(font18, al_map_rgb(255, 0, 0), menuPos3X, menuPos3Y, ALLEGRO_ALIGN_CENTER, text3C);
+
 	switch(selection){
 		case(1):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->gW/2), menuPlayGamePosY -14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->gW/2) - (picWidth()/2.7), menuPlayGamePosY -14, ALLEGRO_FLIP_HORIZONTAL);
+			al_draw_bitmap(msel, menuPos1X + (al_get_text_width(font18,text1C)/2), menuPos1Y -14, NULL);
+			al_draw_bitmap(msel, menuPos1X - (al_get_text_width(font18,text1C)/2) - (picWidth()/2.7), menuPos1Y -14, ALLEGRO_FLIP_HORIZONTAL);
 			break;
 		}
 		case(2):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->aW/2), menuSettingsPosY -14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->aW/2) - (picWidth()/2.7), menuSettingsPosY -14, ALLEGRO_FLIP_HORIZONTAL);
+			al_draw_bitmap(msel, menuPos2X + (al_get_text_width(font18,text2C)/2), menuPos2Y -14, NULL);
+			al_draw_bitmap(msel, menuPos2X - (al_get_text_width(font18,text2C)/2) - (picWidth()/2.7), menuPos2Y -14, ALLEGRO_FLIP_HORIZONTAL);
 			break;
 		}
 		case(3):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->bW/2), menuExitPosY -14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->bW/2) - (picWidth()/2.7), menuExitPosY -14, ALLEGRO_FLIP_HORIZONTAL);
-			break;
-		}
-	}
-}
-void Draw::selectorsGraphics(int selection){
-	switch(selection){
-		case(1):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->rW/2), menuPlayGamePosY-14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->rW/2) - (picWidth()/2.7), menuPlayGamePosY -14, ALLEGRO_FLIP_HORIZONTAL);
-			break;
-		}
-		case(2):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->dW/2), menuSettingsPosY -14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->dW/2) - (picWidth()/2.7), menuSettingsPosY -14, ALLEGRO_FLIP_HORIZONTAL);
-			break;
-		}
-		case(3):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->bW/2), menuExitPosY -14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->bW/2) - (picWidth()/2.7), menuExitPosY -14, ALLEGRO_FLIP_HORIZONTAL);
-			break;
-		}
-	}
-}
-void Draw::selectorsAudio(int selection){
-switch(selection){
-		case(1):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->vW/2), menuPlayGamePosY -14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->vW/2) - (picWidth()/2.7), menuPlayGamePosY -14, ALLEGRO_FLIP_HORIZONTAL);
-			break;
-		}
-		case(2):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->mW/2), menuSettingsPosY -14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->mW/2) - (picWidth()/2.7), menuSettingsPosY -14, ALLEGRO_FLIP_HORIZONTAL);
-			break;
-		}
-		case(3):{
-			al_draw_bitmap(msel, (WIDTH/2) + (this->bW/2), menuExitPosY -14, NULL);
-			al_draw_bitmap(msel, (WIDTH/2) - (this->bW/2) - (picWidth()/2.7), menuExitPosY -14, ALLEGRO_FLIP_HORIZONTAL);
+			al_draw_bitmap(msel, menuPos3X + (al_get_text_width(font18,text3C)/2), menuPos3Y -14, NULL);
+			al_draw_bitmap(msel, menuPos3X - (al_get_text_width(font18,text3C)/2) - (picWidth()/2.7), menuPos3Y -14, ALLEGRO_FLIP_HORIZONTAL);
 			break;
 		}
 	}
@@ -232,6 +154,4 @@ Draw::~Draw(){
 	al_destroy_bitmap(endbg1080);
 	al_destroy_bitmap(msel);
 }
-
-
 #endif

@@ -3,54 +3,29 @@
 #include "Ground.h"
 #include "Audio.h"
 #include "Draw.h"
-#include "Menu.h"
 
-/*
-*	Beginninng of global variables!
-*	Here are the variables for every object in this file
-*	it includes allegro object, class objects and also objects that will come later
-*	
-*/
-
-// Local variables
-int menuSelect = 1;
-bool isGameOver = false;
-bool redraw = false;
-bool start = true;
-bool menuBool = true;
-bool settingsBool = false;
-bool audioBool = false;
-bool graphicsBool = false;
-bool backBool = false;
-
-//Allegro variables
-ALLEGRO_EVENT_QUEUE *event_queue = NULL;
-ALLEGRO_TIMER *FPSTimer = NULL;
-ALLEGRO_TIMER *upTimer = NULL;
-ALLEGRO_TIMER *downTimer = NULL;
-ALLEGRO_TIMER *scoreTimer = NULL;
-ALLEGRO_TIMER *speedTimer = NULL;
-ALLEGRO_DISPLAY *display = NULL;
+ALLEGRO_DISPLAY *display;
+ALLEGRO_EVENT_QUEUE* event_queue;
+ALLEGRO_TIMER* FPSTimer;
+ALLEGRO_TIMER* upTimer;
+ALLEGRO_TIMER* downTimer;
+ALLEGRO_TIMER* scoreTimer;
+ALLEGRO_TIMER* speedTimer;
 
 // Class variables
-Player *player = NULL;
+Player *player;
 vector<Ground> groundVector;
-Ground *ground;
+Ground* ground;
 vector<Ground>::iterator it;
-vector<Ground>::iterator tempIt;
-Draw *draw = NULL;
-Audio *audio = NULL;
-Menu *menu = NULL;
+Draw* draw;
+Audio* audio;
 
-
-/*
-*	Beginninng of initialize object!
-*	Here we initialize all allegro and class objects
-*	This function will return error if that happens
-*	
-*/
+void timerInitalize(ALLEGRO_EVENT_QUEUE*);
+void timerEvent();
+void startTimer(int);
 
 int initialize(){
+
 	//Test allegro object
 	if(!al_init())										
 		return -1;
@@ -60,93 +35,281 @@ int initialize(){
 
 	//test display object
 	if(!display)										
-		return -1;
-
-
-	// initalize player and ground class
-	player = new Player();
-	draw =  new Draw();
-	audio = new Audio();
-	menu = new Menu();
+		return -1;	
 
 	// Load addons for allegro	
 	al_install_keyboard();
 
+	player = new Player();
+	draw = new Draw();
+	audio = new Audio();
+
 	// Create timer 
-	event_queue = al_create_event_queue();
 	FPSTimer = al_create_timer(1.0 / FPS);
 	upTimer = al_create_timer(upSpeed);
 	downTimer = al_create_timer(downSpeed);
 	scoreTimer = al_create_timer(scoreTime);
 	speedTimer = al_create_timer(startSpeed);
 
+	event_queue = al_create_event_queue();
+
 	// Register keyboard events
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
+	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_timer_event_source(FPSTimer));
 	al_register_event_source(event_queue, al_get_timer_event_source(upTimer));
 	al_register_event_source(event_queue, al_get_timer_event_source(downTimer));
 	al_register_event_source(event_queue, al_get_timer_event_source(scoreTimer));
 	al_register_event_source(event_queue, al_get_timer_event_source(speedTimer));
-	al_register_event_source(event_queue, al_get_display_event_source(display));
+	
+
+	// Start timer
+	al_start_timer(FPSTimer);
 
 	return 0;
 }
 
-
 /*
-*	Beginninng of groundInitialize object!
-*	Here we create ground before player can see it
-*	This is done so that ground won't appear from nowhere
-*	
+*	Beginninng of display close object!
+*	If player happened to close game from top right X
+*	then this function will run
+*
 */
 
-void groundInitialize() {
-	ground = new Ground();
+bool displayCloseEvent(ALLEGRO_EVENT ev){
+	if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+		return true;
+	}
+	return false;
+}
+
+/*
+*	Beginninng of keypress event object!
+*	This is where program what key has been pressed 
+*	Both ingame and menu functions are handled
+*
+*/
+
+bool keyPressEvent(ALLEGRO_EVENT ev){
+	bool temp = false;
+
+	if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
+		switch(ev.keyboard.keycode){
+
+			// SPACE button
+			case ALLEGRO_KEY_SPACE:{
+				audio->jump();
+				if (player->getGround())
+					startTimer(1);
+				break;
+			}
+			// ENTER button
+			case ALLEGRO_KEY_ENTER:{
+				switch(gamePos){
+					case(1):{
+						switch(menuText){
+							case(1):{ // Main menu
+								switch (menuSelect){
+									case(1):{
+										gamePos = 2;
+										break;
+									}
+									case(2):{
+										menuText = 2;
+										menuSelect = 1;
+										break;
+									}
+									case(3):{
+										temp = true;
+										break;
+									}
+								}
+								break;
+							}
+							case(2):{ // Settings menu
+								switch (menuSelect){
+									case(1):{
+										menuText = 3;
+										menuSelect = 1;
+										break;
+									}
+									case(2):{
+										menuText = 4;
+										menuSelect = 1;
+										break;
+									}
+									case(3):{
+										menuText = 1;
+										menuSelect = 1;
+										break;
+									}
+								}
+								break;
+							}
+							case(3):{ // Graphics menu
+								switch (menuSelect){
+									case(1):{
+										break;
+									}
+									case(2):{
+
+										break;
+									}
+									case(3):{
+										menuText = 2;
+										menuSelect = 1;
+										break;
+									}
+								}
+								break;
+							}
+							case(4):{ // Audio menu
+								switch (menuSelect){
+									case(1):{
+										break;
+									}
+									case(2):{
+										break;
+									}
+									case(3):{
+										menuText = 2;
+										menuSelect = 1;
+										break;
+									}
+								}
+								break;
+							}
+						}
+						break;
+					}
+					case(4):{
+						gamePos = 1;
+						break;
+					}
+				}
+			}
+			// DOWN button
+			case ALLEGRO_KEY_DOWN:{
+				if (gamePos == 1) {
+					if(menuSelect != 3)
+						menuSelect += 1;
+				}						
+				break;
+			}
+
+			// UP button
+			case ALLEGRO_KEY_UP:{
+				if (gamePos == 1) {
+					if(menuSelect != 1)
+						menuSelect -= 1;
+				}						
+				break;
+			}			
+		}
+	}
+	return temp;
+}
+
+/*
+*	Beginninng of draw object!
+*	This is where program does all the drawing to screen stuff 
+*	This is also where we check if player is dead and start/stop audio
+*
+*/
+
+void drawEvent(){
+	if(redraw && al_is_event_queue_empty(event_queue)) {
+		redraw = false;
+
+		// Menu draw
+		switch(gamePos){
+			case(1):{
+				// Menu music
+				if(!audio->isMenuPlaying())
+					audio->loopMenu();
+
+				draw->menu(menuText, menuSelect);
+				break;
+			}
+			case(2):{
+				gamePos = 3;
+
+				player->start();
 	
-	groundVector.push_back(*ground);
-	delete ground;
+				ground = new Ground();
+				ground->start();
+				groundVector.push_back(*ground);
+				delete ground;
 
-	for (int j = 0; j != gMax; j++){
-		ground = new Ground();
+				for (int j = 0; j != gMax; j++){
+					ground = new Ground();
 
-		groundVector.push_back(*ground);
-		delete ground;
-	}
+					groundVector.push_back(*ground);
+					delete ground;
+				}
 
-	for (it = groundVector.begin() + 1; it != groundVector.end(); it++){
-		it->create(prev(it)->getX(), prev(it)->getY());
-	}
-	groundVector.begin()->start();
+				for (it = groundVector.begin() + 1; it != groundVector.end(); it++){
+					it->create(prev(it)->getX(), prev(it)->getY());
+				}
 
-	// Start timers
-	al_start_timer(FPSTimer);
+				startTimer(0);
+				break;
+			}
+			case(3):{				
+				// Ingame music
+				if(audio->isMenuPlaying())
+					audio->stopLoopMenu();
+
+				if(!audio->isInGamePlaying())
+					audio->loopInGame();
+
+				draw->bg();
+
+				// check if player has dropped to bottom
+				if (player->getY() + draw->picHeight() >= HEIGHT) {
+					gamePos = 4;
+					audio->stopLoopInGame();
+					audio->death();
+				};		
+				
+				// Update all ground positions and draw them to backbuffer
+				player->setGround(false);
+		
+				// Draw grounds to screen
+				for (it = groundVector.begin(); it != groundVector.end(); it++){											
+					draw->ground(it->getX(), it->getY());
+				}
+
+				// draw player and text to backbuffer
+				draw->player(player->getX(), player->getY());
+				draw->gameText(player->getScore(), player->getSpeed());
+				break;
+			}
+			case(4):{
+				// Draw end text to backbuffer
+				draw->endText(player->getScore());
+				break;
+			}
+		}
+
+		// Flip backbuffer to screen
+		al_flip_display();
+		al_clear_to_color(al_map_rgb(0,0,0));
+	}		
 }
 
-/*
-*	Beginninng of destroy object!
-*	Here we destroy everything from memory
-*	This prevents memory leaks (we don't want your PC to run slow)
-*	
-*/
 
-void destroy(){
-	// Destroy all classes from vector
-	for (it = groundVector.begin(); it != groundVector.end(); it++){
-		it->~Ground();
+
+void startTimer(int timer){
+	if(timer == 1){
+		al_start_timer(upTimer);
+	} else {
+		// Start inGame timers
+		al_start_timer(scoreTimer);
+		al_start_timer(downTimer);
+		al_start_timer(speedTimer);
 	}
-
-	// Destroy vector 
-	groundVector.erase(groundVector.begin(), groundVector.end());
-
-	// Destroy allegro objects
-	al_destroy_event_queue(event_queue);
-	al_destroy_timer(FPSTimer);
-	al_destroy_timer(upTimer);
-	al_destroy_timer(downTimer);
-	al_destroy_timer(scoreTimer);
-	al_destroy_display(display);
 }
-
 
 /*
 *	Beginninng of upTimer object!
@@ -182,10 +345,11 @@ void upTimerEvent(ALLEGRO_EVENT ev){
 */
 
 void scoreTimerEvent(ALLEGRO_EVENT ev) {
-	if(ev.timer.source == scoreTimer)
+	if(ev.timer.source == scoreTimer){
 		player->addScore();
 		if(al_get_timer_count(scoreTimer) % speedScore == 0)
 			player->addSpeed();
+	}
 }
 
 /*
@@ -226,7 +390,7 @@ void timerEvent(ALLEGRO_EVENT ev){
 		if(ev.timer.source == FPSTimer)
 			redraw = true;			
 			
-		if (!isGameOver && !menuBool) {
+		if (gamePos == 3) {
 			upTimerEvent(ev);
 
 			scoreTimerEvent(ev);
@@ -236,237 +400,6 @@ void timerEvent(ALLEGRO_EVENT ev){
 	}
 }
 
-/*
-*	Beginninng of display close object!
-*	If player happened to close game from top right X
-*	then this function will run
-*
-*/
-
-bool displayCloseEvent(ALLEGRO_EVENT ev){
-	if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
-		return true;
-	}
-	return false;
-}
-
-/*
-*	Beginninng of keypress event object!
-*	This is where program what key has been pressed 
-*	Both ingame and menu functions are handled
-*
-*/
-
-bool keyPressEvent(ALLEGRO_EVENT ev){
-	bool temp = false;
-
-	if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
-		switch(ev.keyboard.keycode){
-			// SPACE button
-			case ALLEGRO_KEY_SPACE:{
-				audio->jump();
-				if (player->getGround())
-					al_start_timer(upTimer);
-				break;
-			}
-			// ENTER button
-			case ALLEGRO_KEY_ENTER:{
-				if(menuBool && !settingsBool){
-					switch (menuSelect){
-						case(1):{
-							menuBool = false;
-							break;
-						}
-						case(2):{
-							settingsBool = true;
-							menu->setAnimState(true);
-							menuSelect = 1;
-							break;
-						}
-						case(3):{
-							temp = true;
-							break;
-						}
-					}
-				} else if(settingsBool && !graphicsBool && !audioBool){
-					switch(menuSelect){
-						case(1):{
-							graphicsBool = true;
-							menu->setAnimState(true);
-							menuSelect = 1;
-							break;
-						}
-						case(2):{
-							audioBool = true;
-							menu->setAnimState(true);
-							menuSelect = 1;
-							break;
-						}
-						case(3):{
-							settingsBool = false;
-							menu->setAnimState(true);
-							menuSelect = 1;
-							break;
-						}
-					}
-				} else if(graphicsBool){
-					switch(menuSelect){
-						case(1):{
-							break;
-						}
-						case(2):{
-							break;
-						}
-						case(3):{
-							graphicsBool = false;
-							backBool = true;
-							menu->setAnimState(true);
-							menuSelect = 1;
-							break;
-						}
-					}
-				} else if(audioBool){
-					switch(menuSelect){
-						case(1):{
-
-							break;
-						}
-						case(2):{
-							break;
-						}
-						case(3):{
-							audioBool = false;
-							backBool = true;
-							menu->setAnimState(true);
-							menuSelect = 1;
-							break;
-						}
-					}
-				} else if(isGameOver){
-					isGameOver = false;
-					menuBool = true;
-					settingsBool = false;
-					start = true;
-				}
-				break;
-			}
-
-
-			// DOWN button
-			case ALLEGRO_KEY_DOWN:{
-				if (menuBool) {
-					if(menuSelect != 3)
-						menuSelect += 1;
-				}						
-				break;
-			}
-
-			// UP button
-			case ALLEGRO_KEY_UP:{
-				if (menuBool) {
-					if(menuSelect != 1)
-						menuSelect -= 1;
-				}						
-				break;
-			}			
-		}
-	}
-	return temp;
-}
-
-/*
-*	Beginninng of draw object!
-*	This is where program does all the drawing to screen stuff 
-*	This is also where we check if player is dead and start/stop audio
-*
-*/
-
-void drawEvent(){
-	if(redraw && al_is_event_queue_empty(event_queue)) {
-		redraw = false;
-
-		// Menu draw
-		if (menuBool) {
-			// Menu music
-			if(!audio->isMenuPlaying())
-				audio->loopMenu();
-
-			draw->mainMenu(menu->getPlayY(), menu->getSettingsY(), menu->getQuitY(), menu->getPlayX(), menu->getSettingsX(), menu->getQuitX());
-
-			// Settings
-			if(settingsBool){
-				if(graphicsBool){
-					menu->animateGraphics();
-					draw->selectorsGraphics(menuSelect);
-				}else if(audioBool){
-					menu->animateAudio();
-					draw->selectorsAudio(menuSelect);
-				}else if(menu->animateBack()){
-					menu->animateUp();
-					draw->selectorsSettings(menuSelect);
-				}
-			} else {
-				menu->animateDown();
-				draw->selectorsMain(menuSelect);
-			}
-		} 
-
-		// Starting game
-		if (!menuBool && start) {
-			start = false;
-
-			// Ingame music
-			if(audio->isMenuPlaying())
-				audio->stopLoopMenu();
-
-			if(!audio->isInGamePlaying())
-				audio->loopInGame();
-		
-			// set player to start position
-			player->start();
-
-			// draw player, ground and text to backbuffer
-			draw->player(player->getX(), player->getY());
-
-			// Start inGame timers
-			al_start_timer(scoreTimer);
-			al_start_timer(downTimer);
-			al_start_timer(speedTimer);
-		}
-
-		// Draw backround first so it's behind
-		if (!isGameOver && !menuBool) {	
-			draw->bg();
-
-		// check if player has dropped to bottom
-		if (player->getY() + draw->picHeight() >= HEIGHT) {
-			isGameOver = true;
-			audio->stopLoopInGame();
-			audio->death();
-		};		
-				
-		// Update all ground positions and draw them to backbuffer
-		player->setGround(false);
-		
-		// Draw grounds to screen
-		for (it = groundVector.begin(); it != groundVector.end(); it++){											
-			draw->ground(it->getX(), it->getY());
-		}
-
-		// draw player and text to backbuffer
-		draw->player(player->getX(), player->getY());
-		draw->gameText(player->getScore(), player->getSpeed());
-
-		} if(isGameOver) {
-			// Draw end text to backbuffer
-			draw->endText(player->getScore());
-		}		
-
-		// Flip backbuffer to screen
-		al_flip_display();
-		al_clear_to_color(al_map_rgb(0,0,0));
-	}		
-}
 
 /*
 *	Beginninng of events object!
@@ -476,8 +409,6 @@ void drawEvent(){
 */
 
 bool Events(){
-	bool done = false;
-
 	ALLEGRO_EVENT ev;
 	al_wait_for_event(event_queue, &ev);
 
@@ -490,4 +421,35 @@ bool Events(){
 		return true;
 	
 	drawEvent();
+
+	return false;
+}
+
+/*
+*	Beginninng of destroy object!
+*	Here we destroy everything from memory
+*	This prevents memory leaks (we don't want your PC to run slow)
+*	
+*/
+
+void destroy(){
+	// Destroy all classes from vector
+	for (it = groundVector.begin(); it != groundVector.end(); it++){
+		it->~Ground();
+	}
+
+	// Destroy vector 
+	groundVector.erase(groundVector.begin(), groundVector.end());
+
+	al_destroy_event_queue(event_queue);
+	al_destroy_timer(FPSTimer);
+	al_destroy_timer(upTimer);
+	al_destroy_timer(downTimer);
+	al_destroy_timer(scoreTimer);
+	al_destroy_display(display);
+
+	delete player;
+	delete draw;
+	delete audio;
+	
 }

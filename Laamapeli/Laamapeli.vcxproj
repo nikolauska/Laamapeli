@@ -74,7 +74,6 @@
     <ClInclude Include="Ground.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="Audio.h" />
-    <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SimpleIni.h" />
   </ItemGroup>

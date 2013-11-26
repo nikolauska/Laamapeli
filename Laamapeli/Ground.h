@@ -20,6 +20,7 @@ class Ground{
 		int getLenght();		
 };
 
+
 // Create ground for starting position
 void Ground::start(){
 	this->x = pStartX - pSize;

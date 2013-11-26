@@ -36,6 +36,7 @@ class Player{
 		void moveDown();
 };
 
+
 // Player start values
 void Player::start(){
 	this->onGround = true;
@@ -70,8 +71,5 @@ int Player::getSpeed(){return this->speed;}
 void Player::addScore(){this->score += 1;}
 void Player::resetScore(){ this->score = 0; }
 int Player::getScore(){return this->score;}
-
-
-
 
 #endif

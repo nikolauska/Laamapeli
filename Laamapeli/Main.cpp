@@ -1,5 +1,4 @@
 // Object variables
-void groundInitialize();
 int initialize();
 bool Events();
 void destroy();
@@ -15,8 +14,6 @@ int main(int argc, char **argv)
 {	
 	if(initialize() == -1)
 		return -1;
-	
-	groundInitialize();
 
 	while(true) {	
 		if(Events())

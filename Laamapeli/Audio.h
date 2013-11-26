@@ -2,10 +2,10 @@
 #define audioDEF
 #include "Header.h"
 
-ALLEGRO_SAMPLE *menuSong = NULL;
-ALLEGRO_SAMPLE *inGameSong = NULL;
-ALLEGRO_SAMPLE *njak = NULL;
-ALLEGRO_SAMPLE *die = NULL;
+ALLEGRO_SAMPLE *menuSong;
+ALLEGRO_SAMPLE *inGameSong;
+ALLEGRO_SAMPLE *njak;
+ALLEGRO_SAMPLE *die;
 ALLEGRO_SAMPLE_ID MenuMusic;
 ALLEGRO_SAMPLE_ID InGameMusic;
 
