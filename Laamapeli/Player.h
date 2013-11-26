@@ -10,11 +10,12 @@ class Player{
 		int y;
 		int speed;
 		int score;
+		int move;
 	public:
-		Player(){}
+		Player(int WIDTH, int HEIGHT): x(WIDTH / 8), y(HEIGHT / 2){}
 		~Player(){}
 
-		void start();
+		void start(int);
 
 		void setGround(bool);
 		bool getGround();
@@ -38,13 +39,12 @@ class Player{
 
 
 // Player start values
-void Player::start(){
+void Player::start(int startSpeed){
 	this->onGround = true;
 	this->jump = false;
-	this->x = pStartX; 
-	this->y = pStartY; 
 	this->speed = startSpeed; 
 	this->score = 0;
+	this->move = 6;
 }
 
 // Get/Set player ground value
@@ -56,8 +56,8 @@ void Player::setJump(bool onJump){ this->jump = onJump; }
 bool Player::getJump(){ return this->jump; }
 
 // Move player up and down for jumping
-void Player::moveUp(){this->y -= pMove;}
-void Player::moveDown(){this->y += pMove;}
+void Player::moveUp(){this->y -= this->move;}
+void Player::moveDown(){this->y += this->move;}
 
 // Get player position
 int Player::getX(){ return this->x; }

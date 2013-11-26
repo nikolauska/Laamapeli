@@ -6,11 +6,13 @@ class Ground{
 	private:
 		int x;
 		int y;
+		int Height;
+
 	public:
-		Ground(){ this->x = -1; this->y = -1;}
+		Ground(int HEIGHT):Height(HEIGHT){ this->x = -1; this->y = -1;}
 		~Ground(){}
 
-		void start(); 
+		void start(int, int, int); 
 		void create(int, int);		
 		void move(int);
 		bool groundCheck(int, int);
@@ -22,15 +24,21 @@ class Ground{
 
 
 // Create ground for starting position
-void Ground::start(){
-	this->x = pStartX - pSize;
-	this->y = pStartY + pSize;
+void Ground::start(int WIDTH, int HEIGHT, int pic){
+	this->x = (WIDTH / 8) - pic;
+	this->y = (HEIGHT / 2) + pic;
 }
 
 // Create ground on the run
 void Ground::create(int lastX, int lastY){
 	srand(time(NULL));
-		
+	
+	int gPosY1 = (this->Height / 10) * 2; // Ground Y position 1
+	int gPosY2 = (this->Height / 10) * 4; // Ground Y position 2
+	int gPosY3 = (this->Height / 10) * 6; // Ground Y position 3
+	int gPosY4 = (this->Height / 10) * 8; // Ground Y position 4
+
+
 	if (lastY == gPosY1)
 		this->y = gPosY2;
 	else if (lastY == gPosY4)
@@ -58,18 +66,18 @@ void Ground::move(int speed){
 
 // Check if player is on ground
 bool Ground::groundCheck(int pX, int pY){
-	bool levelY = false;
-	bool levelX = false;
-
-	if (pY + pSize == this->y) // check if player is in same level to ground
-		levelY = true; 
-	if (pX + pSize <= this->x && pX - pSize >= this->x) // Check if player is in line
-		levelX = true;
-
-	if (levelY && levelX)
-		return true;
-
-	return false;
+//	bool levelY = false;
+//	bool levelX = false;
+//
+//	if (pY + pSize == this->y) // check if player is in same level to ground
+//		levelY = true; 
+//	if (pX + pSize <= this->x && pX - pSize >= this->x) // Check if player is in line
+//		levelX = true;
+//
+//	if (levelY && levelX)
+//		return true;
+//
+	return true;
 }
 
 // Get variables

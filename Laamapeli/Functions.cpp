@@ -3,6 +3,7 @@
 #include "Ground.h"
 #include "Audio.h"
 #include "Draw.h"
+#include "SimpleIni.h"
 
 ALLEGRO_DISPLAY *display;
 ALLEGRO_EVENT_QUEUE* event_queue;
@@ -19,30 +20,109 @@ Ground* ground;
 vector<Ground>::iterator it;
 Draw* draw;
 Audio* audio;
+CSimpleIniA* ini;
+
+int WIDTH;
+int HEIGHT;
+int FPS;
+int Volume;
+float Pan; 
+float upTime;
+float upSpeed;
+float downSpeed;
+float scoreTime;
+int speedScore;
+int startSpeed;
+int resPos;
+
+float tempPan;
+int tempFPS;
+int tempVolume;
 
 void timerInitalize(ALLEGRO_EVENT_QUEUE*);
 void timerEvent();
 void startTimer(int);
+void destroy();
+
+void getResPos(){
+	resPos = 0;
+	for(int i = 0; i != resolutions; i++) {
+		if(resWidth[i] == WIDTH && resHeight[i] == HEIGHT){
+			resPos = i;
+			break;
+		}
+			
+	}
+}
+
+void loadingScreen(){
+	al_init_image_addon();
+	ALLEGRO_BITMAP *loading = al_load_bitmap("Data/Pictures/loading.png");
+	al_draw_scaled_bitmap(loading, 0, 0, 1920, 1080, 0, 0, WIDTH, HEIGHT, NULL);
+	// Flip backbuffer to screen
+	al_flip_display();
+	al_clear_to_color(al_map_rgb(0,0,0));
+}
+
+void iniWrite(string section, string key, string newValue){	
+	ini->SetValue(section.c_str(), key.c_str(), newValue.c_str());
+	ini->SaveFile("Data/Config/Settings.ini");
+}
+
+string iniRead(string section, string key, string defaultValue){
+	const char *pVal = ini->GetValue(section.c_str(), key.c_str(), defaultValue.c_str());
+	string cppstr(pVal);
+	return cppstr;
+}
+
+
+void iniInitialize(){
+	ini = new CSimpleIniA();
+	ini->SetUnicode();
+	ini->LoadFile("Data/Config/Settings.ini");
+	
+	WIDTH = atoi(iniRead("Display","Width","1280").c_str());
+	HEIGHT = atoi(iniRead("Display","Height","720").c_str());
+	FPS = atoi(iniRead("Display","FPS","60").c_str());
+	tempFPS = FPS;
+
+	Volume = atoi(iniRead("Audio","Volume","100").c_str());
+	tempVolume = Volume;
+	Pan = atof(iniRead("Audio","Pan","0").c_str());
+	tempPan = Pan;
+
+	upTime = atof(iniRead("Game","upTime","1").c_str());
+	upSpeed = atof(iniRead("Game","upSpeed","0.01").c_str());
+	downSpeed = atof(iniRead("Game","downSpeed","0.01").c_str());
+	scoreTime = atof(iniRead("Game","scoreTime","0.2").c_str());
+	speedScore = atof(iniRead("Game","speedScore","100").c_str());
+	startSpeed = atof(iniRead("Game","startSpeed","2").c_str());
+}
 
 int initialize(){
 
 	//Test allegro object
 	if(!al_init())										
 		return -1;
+	
+	iniInitialize();
 
 	//create our display object
-	display = al_create_display(WIDTH, HEIGHT);	
-
+	display = al_create_display(WIDTH, HEIGHT);
 	//test display object
 	if(!display)										
 		return -1;	
 
+	loadingScreen();
+
+	getResPos();
+
+	player = new Player(WIDTH, HEIGHT);
+	draw = new Draw(HEIGHT, WIDTH);
+	audio = new Audio();	
+
 	// Load addons for allegro	
 	al_install_keyboard();
-
-	player = new Player();
-	draw = new Draw();
-	audio = new Audio();
 
 	// Create timer 
 	FPSTimer = al_create_timer(1.0 / FPS);
@@ -98,7 +178,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 
 			// SPACE button
 			case ALLEGRO_KEY_SPACE:{
-				audio->jump();
+				audio->jump(Volume, Pan);
 				if (player->getGround())
 					startTimer(1);
 				break;
@@ -116,7 +196,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 									}
 									case(2):{
 										menuText = 2;
-										menuSelect = 1;
+										menuSelect = 0;
 										break;
 									}
 									case(3):{
@@ -130,17 +210,17 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 								switch (menuSelect){
 									case(1):{
 										menuText = 3;
-										menuSelect = 1;
+										menuSelect = 0;
 										break;
 									}
 									case(2):{
 										menuText = 4;
-										menuSelect = 1;
+										menuSelect = 0;
 										break;
 									}
 									case(3):{
 										menuText = 1;
-										menuSelect = 1;
+										menuSelect = 0;
 										break;
 									}
 								}
@@ -149,15 +229,21 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 							case(3):{ // Graphics menu
 								switch (menuSelect){
 									case(1):{
+										iniWrite("Display", "Width", to_string(resWidth[resPos]));
+										iniWrite("Display", "Height", to_string(resHeight[resPos]));
+										destroy();
+										initialize();
 										break;
 									}
 									case(2):{
-
+										iniWrite("Display", "FPS", to_string(tempFPS));
+										destroy();
+										initialize();
 										break;
 									}
 									case(3):{
 										menuText = 2;
-										menuSelect = 1;
+										menuSelect = 0;
 										break;
 									}
 								}
@@ -166,14 +252,20 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 							case(4):{ // Audio menu
 								switch (menuSelect){
 									case(1):{
+										iniWrite("Audio", "Volume", to_string(tempVolume));
+										destroy();
+										initialize();
 										break;
 									}
 									case(2):{
+										iniWrite("Audio", "Pan", to_string(tempPan));
+										destroy();
+										initialize();
 										break;
 									}
 									case(3):{
 										menuText = 2;
-										menuSelect = 1;
+										menuSelect = 0;
 										break;
 									}
 								}
@@ -204,7 +296,80 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 						menuSelect -= 1;
 				}						
 				break;
-			}			
+			}
+			case ALLEGRO_KEY_LEFT:{
+				if(gamePos == 1) {
+					switch(menuText){
+						case(3):{ // Graphics
+							switch(menuSelect){
+								case(1):{
+									if(resPos != 0)
+										resPos -= 1;
+									break;
+								}
+								case(2):{
+									if(tempFPS != 5)
+										tempFPS -= 5;
+									break;
+								}
+							}
+							break;
+						}
+						case(4):{ // Audio
+							switch(menuSelect){
+								case(1):{
+									if(tempVolume != 0)
+										tempVolume -= 1;
+									break;
+								}
+								case(2):{
+									if(tempPan != -1)
+										tempPan -= 0.1;
+									break;
+								}
+							}
+							break;
+						}
+					}
+				}					
+				break;
+			}
+			case ALLEGRO_KEY_RIGHT:{
+				if(gamePos == 1) {
+					switch(menuText){
+						case(3):{ // Graphics
+							switch(menuSelect){
+								case(1):{
+									if(resPos != resolutions)
+										resPos += 1;
+									break;
+								}
+								case(2):{
+									tempFPS += 5;
+									break;
+								}
+							}
+							break;
+						}
+						case(4):{ // Audio
+							switch(menuSelect){
+								case(1):{
+									if(tempVolume != 100)
+										tempVolume += 1;
+									break;
+								}
+								case(2):{
+									if(tempPan != 1)
+										tempPan += 0.1;
+									break;
+								}
+							}
+							break;
+						}
+					}						
+					break;
+				}
+			}	
 		}
 	}
 	return temp;
@@ -226,23 +391,23 @@ void drawEvent(){
 			case(1):{
 				// Menu music
 				if(!audio->isMenuPlaying())
-					audio->loopMenu();
+					audio->loopMenu(Volume, Pan);
 
-				draw->menu(menuText, menuSelect);
+				draw->menu(menuText, menuSelect, resWidth[resPos], resHeight[resPos], tempFPS, tempVolume, tempPan);
 				break;
 			}
 			case(2):{
 				gamePos = 3;
 
-				player->start();
+				player->start(startSpeed);
 	
-				ground = new Ground();
-				ground->start();
+				ground = new Ground(HEIGHT);
+				ground->start(WIDTH, HEIGHT, draw->picHeight());
 				groundVector.push_back(*ground);
 				delete ground;
 
-				for (int j = 0; j != gMax; j++){
-					ground = new Ground();
+				for (int j = 1; j != int((WIDTH / 300) + 3); j++){
+					ground = new Ground(HEIGHT);
 
 					groundVector.push_back(*ground);
 					delete ground;
@@ -261,7 +426,7 @@ void drawEvent(){
 					audio->stopLoopMenu();
 
 				if(!audio->isInGamePlaying())
-					audio->loopInGame();
+					audio->loopInGame(Volume, Pan);
 
 				draw->bg();
 
@@ -269,7 +434,7 @@ void drawEvent(){
 				if (player->getY() + draw->picHeight() >= HEIGHT) {
 					gamePos = 4;
 					audio->stopLoopInGame();
-					audio->death();
+					audio->death(Volume, Pan);
 				};		
 				
 				// Update all ground positions and draw them to backbuffer
@@ -424,7 +589,6 @@ bool Events(){
 
 	return false;
 }
-
 /*
 *	Beginninng of destroy object!
 *	Here we destroy everything from memory

@@ -22,14 +22,14 @@ class Audio{
 					al_destroy_sample(die);
 				}
 
-		void jump();
-		void death();
+		void jump(float, float);
+		void death(float, float);
 
-		void loopMenu();
+		void loopMenu(float, float);
 		void stopLoopMenu();
 		bool isMenuPlaying();
 
-		void loopInGame();		
+		void loopInGame(float, float);		
 		void stopLoopInGame();
 		bool isInGamePlaying();
 };
@@ -48,15 +48,15 @@ Audio::Audio(){
 	this->InGamePlaying = false;
 }
 
-void Audio::jump(){al_play_sample(njak, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
+void Audio::jump(float Volume, float Pan){al_play_sample(njak, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
 
-void Audio::death(){al_play_sample(die, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
+void Audio::death(float Volume, float Pan){al_play_sample(die, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
 
-void Audio::loopMenu(){al_play_sample(menuSong, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &MenuMusic); this->menuPlaying = true;}
+void Audio::loopMenu(float Volume, float Pan){al_play_sample(menuSong, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_LOOP, &MenuMusic); this->menuPlaying = true;}
 void Audio::stopLoopMenu(){al_stop_sample(&MenuMusic); this->menuPlaying = false;}
 bool Audio::isMenuPlaying(){return this->menuPlaying;}
 
-void Audio::loopInGame(){al_play_sample(inGameSong, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &InGameMusic); this->InGamePlaying = true;}
+void Audio::loopInGame(float Volume, float Pan){al_play_sample(inGameSong, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_LOOP, &InGameMusic); this->InGamePlaying = true;}
 void Audio::stopLoopInGame(){al_stop_sample(&InGameMusic); this->InGamePlaying = false;}
 bool Audio::isInGamePlaying(){return this->InGamePlaying;}
 
