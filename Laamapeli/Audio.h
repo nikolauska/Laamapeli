@@ -1,13 +1,7 @@
 #ifndef audioDEF
 #define audioDEF
-#include "Header.h"
 
-ALLEGRO_SAMPLE *menuSong;
-ALLEGRO_SAMPLE *inGameSong;
-ALLEGRO_SAMPLE *njak;
-ALLEGRO_SAMPLE *die;
-ALLEGRO_SAMPLE_ID MenuMusic;
-ALLEGRO_SAMPLE_ID InGameMusic;
+
 
 class Audio{
 	private:
@@ -32,9 +26,16 @@ class Audio{
 		void loopInGame(float, float);		
 		void stopLoopInGame();
 		bool isInGamePlaying();
+
+		ALLEGRO_SAMPLE *menuSong;
+		ALLEGRO_SAMPLE *inGameSong;
+		ALLEGRO_SAMPLE *njak;
+		ALLEGRO_SAMPLE *die;
+		ALLEGRO_SAMPLE_ID MenuMusic;
+		ALLEGRO_SAMPLE_ID InGameMusic;
 };
 
-Audio::Audio(){
+inline Audio::Audio(){
 	al_install_audio();
 	al_init_acodec_addon();
 
@@ -48,16 +49,16 @@ Audio::Audio(){
 	this->InGamePlaying = false;
 }
 
-void Audio::jump(float Volume, float Pan){al_play_sample(njak, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
+inline void Audio::jump(float Volume, float Pan){al_play_sample(njak, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
 
-void Audio::death(float Volume, float Pan){al_play_sample(die, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
+inline void Audio::death(float Volume, float Pan){al_play_sample(die, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
 
-void Audio::loopMenu(float Volume, float Pan){al_play_sample(menuSong, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_LOOP, &MenuMusic); this->menuPlaying = true;}
-void Audio::stopLoopMenu(){al_stop_sample(&MenuMusic); this->menuPlaying = false;}
-bool Audio::isMenuPlaying(){return this->menuPlaying;}
+inline void Audio::loopMenu(float Volume, float Pan){al_play_sample(menuSong, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_LOOP, &MenuMusic); this->menuPlaying = true;}
+inline void Audio::stopLoopMenu(){al_stop_sample(&MenuMusic); this->menuPlaying = false;}
+inline bool Audio::isMenuPlaying(){return this->menuPlaying;}
 
-void Audio::loopInGame(float Volume, float Pan){al_play_sample(inGameSong, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_LOOP, &InGameMusic); this->InGamePlaying = true;}
-void Audio::stopLoopInGame(){al_stop_sample(&InGameMusic); this->InGamePlaying = false;}
-bool Audio::isInGamePlaying(){return this->InGamePlaying;}
+inline void Audio::loopInGame(float Volume, float Pan){al_play_sample(inGameSong, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_LOOP, &InGameMusic); this->InGamePlaying = true;}
+inline void Audio::stopLoopInGame(){al_stop_sample(&InGameMusic); this->InGamePlaying = false;}
+inline bool Audio::isInGamePlaying(){return this->InGamePlaying;}
 
 #endif

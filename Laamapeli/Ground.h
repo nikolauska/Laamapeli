@@ -1,6 +1,5 @@
 #ifndef groundDEF
 #define groundDEF
-#include "Header.h"
 
 class Ground{
 	private:
@@ -24,13 +23,13 @@ class Ground{
 
 
 // Create ground for starting position
-void Ground::start(int WIDTH, int HEIGHT, int pic){
+inline void Ground::start(int WIDTH, int HEIGHT, int pic){
 	this->x = (WIDTH / 8) - pic;
 	this->y = (HEIGHT / 2) + pic;
 }
 
 // Create ground on the run
-void Ground::create(int lastX, int lastY){
+inline void Ground::create(int lastX, int lastY){
 	srand(time(NULL));
 	
 	int gPosY1 = (this->Height / 10) * 2; // Ground Y position 1
@@ -59,13 +58,13 @@ void Ground::create(int lastX, int lastY){
 }
 
 // Move ground to left
-void Ground::move(int speed){
+inline void Ground::move(int speed){
 	this->x -= speed;
 }
 
 
 // Check if player is on ground
-bool Ground::groundCheck(int pX, int pY){
+inline bool Ground::groundCheck(int pX, int pY){
 //	bool levelY = false;
 //	bool levelX = false;
 //
@@ -81,7 +80,7 @@ bool Ground::groundCheck(int pX, int pY){
 }
 
 // Get variables
-int Ground::getX(){return this->x;}
-int Ground::getY(){return this->y;}
+inline int Ground::getX(){return this->x;}
+inline int Ground::getY(){return this->y;}
 
 #endif

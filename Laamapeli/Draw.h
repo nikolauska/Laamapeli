@@ -1,22 +1,6 @@
 #ifndef drawDEF
 #define drawDEF
-#include "Header.h"
 
-ALLEGRO_FONT *font18;
-ALLEGRO_FONT *font42;
-ALLEGRO_BITMAP *lamapic;
-ALLEGRO_BITMAP *groundpic;
-ALLEGRO_BITMAP *bg1080;
-ALLEGRO_BITMAP *menubg1080;
-ALLEGRO_BITMAP *endbg1080;
-ALLEGRO_BITMAP *msel;
-
-const char* text1C;
-const char* text2C;
-const char* text3C;
-string text1 = "";
-string text2 = "";
-string text3 = "";
 
 class Draw{
 	private:
@@ -38,10 +22,19 @@ class Draw{
 
 		int picHeight(){return al_get_bitmap_height(lamapic);}
 		int picWidth(){return al_get_bitmap_width(lamapic);}
+
+		ALLEGRO_FONT *font18;
+		ALLEGRO_FONT *font42;
+		ALLEGRO_BITMAP *lamapic;
+		ALLEGRO_BITMAP *groundpic;
+		ALLEGRO_BITMAP *bg1080;
+		ALLEGRO_BITMAP *menubg1080;
+		ALLEGRO_BITMAP *endbg1080;
+		ALLEGRO_BITMAP *msel;
 };
 
 
-Draw::Draw(int HEIGHT, int WIDTH){
+inline Draw::Draw(int HEIGHT, int WIDTH){
 	al_init_font_addon(); 
 	al_init_ttf_addon();	
 	
@@ -60,11 +53,11 @@ Draw::Draw(int HEIGHT, int WIDTH){
 	this->WIDTH = WIDTH;
 }
 
-void Draw::player(int x, int y){
+inline void Draw::player(int x, int y){
 	al_draw_bitmap(lamapic, x, y, NULL);
 }
 
-void Draw::ground(int x, int y){
+inline void Draw::ground(int x, int y){
 	int x1 = x - 100;
 	int y1 = y;
 
@@ -76,24 +69,31 @@ void Draw::ground(int x, int y){
 
 
 
-void Draw::bg(){
+inline void Draw::bg(){
 	//bitmap, source x, source y, source width, source height, destination x, destination y, destination width, destination height, flags
 	al_draw_scaled_bitmap(bg1080, 0, 0, 1920, 1080, 0, 0, this->WIDTH, this->HEIGHT, NULL);
 }
 
-void Draw::endText(int score){
+inline void Draw::endText(int score){
 	al_draw_scaled_bitmap(endbg1080, 0, 0, 1920, 1080, 0, 0, this->WIDTH, this->HEIGHT, NULL);
 
 	al_draw_textf(font18, al_map_rgb(255, 0, 0), this->WIDTH / 2, this->HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i", score);
 }
 
-void Draw::gameText(int score, int speed){
+inline void Draw::gameText(int score, int speed){
 	al_draw_textf(font18, al_map_rgb(255, 0, 0), 5, 10, 0, "Score: %i", score);
 	al_draw_textf(font18, al_map_rgb(255, 0, 0), 5, 40, 0, "Speed: %i", speed);
 }
 
-void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, int Volume, float Pan){
+inline void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, int Volume, float Pan){
 	al_draw_scaled_bitmap(menubg1080, 0, 0, 1920, 1080, 0, 0, this->WIDTH, this->HEIGHT, NULL);
+
+	const char* text1C;
+	const char* text2C;
+	const char* text3C;
+	string text1 = "";
+	string text2 = "";
+	string text3 = "";
 
 	switch(menu){
 		case(1):{
@@ -149,7 +149,7 @@ void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, int Vol
 	}
 }
 
-Draw::~Draw(){
+inline Draw::~Draw(){
 	al_destroy_font(font18);
 	al_destroy_font(font42);
 	al_destroy_bitmap(lamapic);
