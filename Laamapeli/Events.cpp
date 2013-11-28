@@ -19,6 +19,8 @@ float scoreTime;
 int speedScore;
 int startSpeed;
 int resPos;
+int lastX;
+int lastY;
 
 float tempPan;
 int tempFPS;
@@ -37,6 +39,8 @@ bool timerEvent(ALLEGRO_EVENT);
 void startTimer(int);
 int initialize();
 void destroy();
+void groundVectorDestroy();
+string round(float);
 
 
 void iniWrite(string, string, string);
@@ -70,6 +74,24 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 		switch(ev.keyboard.keycode){
 
 			// SPACE button
+			case ALLEGRO_KEY_ESCAPE:{
+				if (gamePos == 3){
+					gamePos = 1;
+					groundVectorDestroy();
+				}
+				if(gamePos == 1)
+					if(menuText == 1)
+						temp = true;
+					else
+						if(menuText != 4)
+							menuText -= 1;
+						else 
+							menuText = 2;
+
+				break;
+			}
+
+			// SPACE button
 			case ALLEGRO_KEY_SPACE:{
 				audio->jump(Volume, Pan);
 				if (player->getGround())
@@ -85,6 +107,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 								switch (menuSelect){
 									case(1):{
 										gamePos = 2;
+										menuSelect = 0;
 										break;
 									}
 									case(2):{
@@ -151,7 +174,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 										break;
 									}
 									case(2):{
-										iniWrite("Audio", "Pan", to_string(tempPan));
+										iniWrite("Audio", "Pan", round(tempPan));
 										destroy();
 										initialize();
 										break;
@@ -169,6 +192,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 					}
 					case(4):{
 						gamePos = 1;
+						groundVectorDestroy();
 						break;
 					}
 				}
@@ -296,10 +320,10 @@ void drawEvent(){
 			case(2):{
 				gamePos = 3;
 
-				player->start(startSpeed);
+				player->start(startSpeed, WIDTH, HEIGHT);
 	
 				ground = new Ground(HEIGHT);
-				ground->start(WIDTH, HEIGHT, draw->picHeight());
+				ground->start(WIDTH, HEIGHT, draw->picHeight(), &lastX, &lastY);
 				groundVector.push_back(*ground);
 				delete ground;
 
@@ -310,8 +334,8 @@ void drawEvent(){
 					delete ground;
 				}
 
-				for (it = groundVector.begin() + 1; it != groundVector.end(); it++){
-					it->create(prev(it)->getX(), prev(it)->getY());
+				for (it = groundVector.begin(); it != groundVector.end(); it++){
+					it->create(&lastX, &lastY);
 				}
 
 				startTimer(0);
@@ -337,9 +361,20 @@ void drawEvent(){
 				// Update all ground positions and draw them to backbuffer
 				player->setGround(false);
 		
+				int tempX = player->getX();
+				int tempY = player->getY();
+				int tempH = draw->picHeight();
+				int tempW = draw->picWidth();
+				player->setGround(false);
 				// Draw grounds to screen
 				for (it = groundVector.begin(); it != groundVector.end(); it++){											
 					draw->ground(it->getX(), it->getY());
+					if(it->getX() - 300 <= (tempX - tempW*1.5) && it->getX() + 300 - tempW/2 >= (tempX))
+						if(it->getY() == (tempY + tempH))
+							player->setGround(true);
+
+					if (it->getX() + 300 <= 0)
+						it->create(&lastX, &lastY);
 				}
 
 				// draw player and text to backbuffer

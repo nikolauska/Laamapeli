@@ -22,11 +22,11 @@ int initialize(){
 
 	getResPos();
 
-	player = new Player(WIDTH, HEIGHT);
+	player = new Player();
 	draw = new Draw(HEIGHT, WIDTH);
 	audio = new Audio();	
 
-	// Load addons for allegro	
+	// Load addons for allegro
 	al_install_keyboard();
 
 	// Create timer 
@@ -61,7 +61,7 @@ int initialize(){
 *	
 */
 
-void destroy(){
+void groundVectorDestroy(){
 	// Destroy all classes from vector
 	for (it = groundVector.begin(); it != groundVector.end(); it++){
 		it->~Ground();
@@ -69,6 +69,10 @@ void destroy(){
 
 	// Destroy vector 
 	groundVector.erase(groundVector.begin(), groundVector.end());
+}
+
+void destroy(){
+	groundVectorDestroy();
 
 	al_destroy_event_queue(event_queue);
 	al_destroy_timer(FPSTimer);

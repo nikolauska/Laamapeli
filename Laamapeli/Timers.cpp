@@ -34,19 +34,13 @@ void startTimer(int timer){
 
 void upTimerEvent(ALLEGRO_EVENT ev){
 	if(al_get_timer_started(upTimer)){
-		if(ev.timer.source == upTimer) {
+		if(ev.timer.source == upTimer){
 			if(al_get_timer_count(upTimer) == upTime){
 				al_stop_timer(upTimer);
 				al_set_timer_count(upTimer, 0);
-			}
+			} 
 
 			player->moveUp();			
-		}
-										
-	} else {
-		if(ev.timer.source == downTimer) {
-			if(!player->getGround())
-				player->moveDown();			
 		}
 	}
 }
@@ -76,17 +70,35 @@ void scoreTimerEvent(ALLEGRO_EVENT ev) {
 void speedTimerEvent(){
 	if(al_get_timer_started(speedTimer)){
 		if(al_get_timer_count(speedTimer) >= (1/player->getSpeed())) {
-			for (it = begin(groundVector); it != end(groundVector); it++){
-						
-				if (it->getX() + 300 <= 0)
-					if(it != groundVector.begin())
-						it->create(prev(it)->getX(), prev(it)->getY());						
-							
-				if(it->groundCheck(player->getX(), player->getY()))
-					player->setGround(true);
-											
+			for (it = begin(groundVector); it != end(groundVector); it++){					
 				it->move(player->getSpeed());
 			}				
+		}
+	}
+}
+
+
+void downTimerEvent(ALLEGRO_EVENT ev){
+	if(!(al_get_timer_started(upTimer))){
+		if(ev.timer.source == downTimer){
+			if(!player->getGround())
+				player->moveDown();
+				/*bool tempground = false;
+				
+
+				for (it = begin(groundVector); it != end(groundVector); it++){
+					if(it->getX() >= (tempX + tempW) && it->getX() <= (tempX + tempW + 300))
+						if(it->getY() == (tempY + tempH))
+							tempground = true;
+				}
+
+				if(!tempground){
+					
+					player->setGround(false);
+				}else{
+					player->setGround(true);
+				}*/
+				
 		}
 	}
 }
@@ -106,6 +118,8 @@ bool timerEvent(ALLEGRO_EVENT ev){
 			
 		if (gamePos == 3) {
 			upTimerEvent(ev);
+
+			downTimerEvent(ev);
 
 			scoreTimerEvent(ev);
 

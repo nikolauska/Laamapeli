@@ -45,6 +45,8 @@ extern float scoreTime;
 extern int speedScore;
 extern int startSpeed;
 extern int resPos;
+extern int lastX;
+extern int lastY;
 
 extern float tempPan;
 extern int tempFPS;

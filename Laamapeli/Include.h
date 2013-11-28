@@ -14,6 +14,8 @@
 #include <vector>
 #include <string>
 #include <iterator>
+#include <math.h>
+#include <sstream>
 
 using namespace std;
 

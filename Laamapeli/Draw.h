@@ -1,6 +1,7 @@
 #ifndef drawDEF
 #define drawDEF
 
+string round(float);
 
 class Draw{
 	private:
@@ -58,12 +59,6 @@ inline void Draw::player(int x, int y){
 }
 
 inline void Draw::ground(int x, int y){
-	int x1 = x - 100;
-	int y1 = y;
-
-	int x2 = x + 100;
-	int y2 = y;
-
 	al_draw_bitmap(groundpic, x, y, NULL);
 }
 
@@ -116,7 +111,7 @@ inline void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, 
 		}
 		case(4):{
 			text1 = "Volume: " + to_string(Volume);
-			text2 = "Pan: " + to_string(Pan);
+			text2 = "Pan: " + round(Pan);
 			text3 = "Back";
 			break;
 		}

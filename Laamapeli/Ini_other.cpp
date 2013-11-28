@@ -30,9 +30,9 @@ void iniInitialize(){
 	Pan = atof(iniRead("Audio","Pan","0").c_str());
 	tempPan = Pan;
 
-	upTime = atof(iniRead("Game","upTime","1").c_str());
-	upSpeed = atof(iniRead("Game","upSpeed","0.01").c_str());
-	downSpeed = atof(iniRead("Game","downSpeed","0.01").c_str());
+	upTime = atof(iniRead("Game","upTime","36").c_str());
+	upSpeed = atof(iniRead("Game","upSpeed","0.04").c_str());
+	downSpeed = atof(iniRead("Game","downSpeed","0.05").c_str());
 	scoreTime = atof(iniRead("Game","scoreTime","0.2").c_str());
 	speedScore = atof(iniRead("Game","speedScore","100").c_str());
 	startSpeed = atof(iniRead("Game","startSpeed","2").c_str());
@@ -56,4 +56,12 @@ void loadingScreen(){
 	// Flip backbuffer to screen
 	al_flip_display();
 	al_clear_to_color(al_map_rgb(0,0,0));
+}
+
+string round(float x) {
+    stringstream ss;
+    ss << fixed;
+    ss.precision(1); // set # places after decimal
+    ss << x;
+    return ss.str();
 }
