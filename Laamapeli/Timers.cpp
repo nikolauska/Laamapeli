@@ -35,7 +35,7 @@ void startTimer(int timer){
 void upTimerEvent(ALLEGRO_EVENT ev){
 	if(al_get_timer_started(upTimer)){
 		if(ev.timer.source == upTimer){
-			if(al_get_timer_count(upTimer) == upTime){
+			if(al_get_timer_count(upTimer) >= (upTime - (player->getSpeed()*0.1))){
 				al_stop_timer(upTimer);
 				al_set_timer_count(upTimer, 0);
 			} 
@@ -70,8 +70,22 @@ void scoreTimerEvent(ALLEGRO_EVENT ev) {
 void speedTimerEvent(){
 	if(al_get_timer_started(speedTimer)){
 		if(al_get_timer_count(speedTimer) >= (1/player->getSpeed())) {
-			for (it = begin(groundVector); it != end(groundVector); it++){					
-				it->move(player->getSpeed());
+			int tempX = player->getX();
+			int tempY = player->getY();
+			int tempH = draw->picHeight();
+			int tempW = draw->picWidth();
+			int speed = player->getSpeed();
+
+			player->setGround(false);
+			for (it = begin(groundVector); it != end(groundVector); it++){
+				it->move(speed);
+
+				if (it->getX() + 300 <= 0)
+						it->create(lastX, lastY, speed);
+
+				if(it->getX() - 300 <= (tempX - tempW*1.5) && it->getX() + 300 - tempW/2 >= (tempX))
+					if(it->getY() == (tempY + tempH))
+						player->setGround(true);
 			}				
 		}
 	}

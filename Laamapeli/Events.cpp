@@ -41,8 +41,6 @@ int initialize();
 void destroy();
 void groundVectorDestroy();
 string round(float);
-
-
 void iniWrite(string, string, string);
 
 
@@ -323,25 +321,21 @@ void drawEvent(){
 				player->start(startSpeed, WIDTH, HEIGHT);
 	
 				ground = new Ground(HEIGHT);
-				ground->start(WIDTH, HEIGHT, draw->picHeight(), &lastX, &lastY);
+				ground->start(WIDTH, HEIGHT, draw->picHeight(), lastX, lastY);
 				groundVector.push_back(*ground);
 				delete ground;
 
-				for (int j = 1; j != int((WIDTH / 300) + 3); j++){
+				for (int j = 0; j != int((WIDTH / 300) + 15); j++){
 					ground = new Ground(HEIGHT);
-
+					ground->create(lastX, lastY, player->getSpeed());
 					groundVector.push_back(*ground);
 					delete ground;
-				}
-
-				for (it = groundVector.begin(); it != groundVector.end(); it++){
-					it->create(&lastX, &lastY);
 				}
 
 				startTimer(0);
 				break;
 			}
-			case(3):{				
+			case(3):{
 				// Ingame music
 				if(audio->isMenuPlaying())
 					audio->stopLoopMenu();
@@ -359,22 +353,10 @@ void drawEvent(){
 				};		
 				
 				// Update all ground positions and draw them to backbuffer
-				player->setGround(false);
-		
-				int tempX = player->getX();
-				int tempY = player->getY();
-				int tempH = draw->picHeight();
-				int tempW = draw->picWidth();
-				player->setGround(false);
-				// Draw grounds to screen
-				for (it = groundVector.begin(); it != groundVector.end(); it++){											
-					draw->ground(it->getX(), it->getY());
-					if(it->getX() - 300 <= (tempX - tempW*1.5) && it->getX() + 300 - tempW/2 >= (tempX))
-						if(it->getY() == (tempY + tempH))
-							player->setGround(true);
 
-					if (it->getX() + 300 <= 0)
-						it->create(&lastX, &lastY);
+				// Draw grounds to screen
+				for (it = groundVector.begin(); it != groundVector.end(); it++){
+					draw->ground(it->getX(), it->getY());				
 				}
 
 				// draw player and text to backbuffer
