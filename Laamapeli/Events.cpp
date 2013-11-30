@@ -76,6 +76,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 				if (gamePos == 3){
 					gamePos = 1;
 					groundVectorDestroy();
+					audio->stopLoopInGame();
 				}
 				else if(gamePos == 1)
 					if(menuText == 1)
@@ -413,12 +414,12 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 								if(tempVolume != 100)
 									tempVolume += 1;
 								else
-									resPos = 0;
+									tempVolume = 100;
 							else if(ev.mouse.dz < 0)
 								if(resPos != 0)
-									resPos -= 1;
+									tempVolume -= 1;
 								else
-									resPos = resolutions - 1;							
+									tempVolume = 0;							
 							break;
 						}
 					}
