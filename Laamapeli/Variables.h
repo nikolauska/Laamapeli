@@ -57,5 +57,4 @@ extern int resWidth[];
 extern int resHeight[];
 extern bool redraw;
 extern int gamePos;
-
 #endif

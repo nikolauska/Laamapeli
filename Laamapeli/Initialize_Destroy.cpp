@@ -28,6 +28,7 @@ int initialize(){
 
 	// Load addons for allegro
 	al_install_keyboard();
+	al_install_mouse();
 
 	// Create timer 
 	FPSTimer = al_create_timer(1.0 / FPS);
@@ -46,11 +47,13 @@ int initialize(){
 	al_register_event_source(event_queue, al_get_timer_event_source(downTimer));
 	al_register_event_source(event_queue, al_get_timer_event_source(scoreTimer));
 	al_register_event_source(event_queue, al_get_timer_event_source(speedTimer));
+	al_register_event_source(event_queue, al_get_mouse_event_source());
 	
 
 	// Start timer
 	al_start_timer(FPSTimer);
 
+	srand(time(NULL));
 	return 0;
 }
 

@@ -32,9 +32,7 @@ inline void Ground::start(int WIDTH, int HEIGHT, int pic, int &lastX, int &lastY
 }
 
 // Create ground on the run
-inline void Ground::create(int &lastX, int &lastY, int speed){
-	srand(time(NULL));
-	
+inline void Ground::create(int &lastX, int &lastY, int speed){	
 	int gPosY1 = (this->Height / 12) * 2; // Ground Y position 1
 	int gPosY2 = (this->Height / 12) * 4; // Ground Y position 2
 	int gPosY3 = (this->Height / 12) * 6; // Ground Y position 3

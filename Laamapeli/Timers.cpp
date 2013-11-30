@@ -35,7 +35,7 @@ void startTimer(int timer){
 void upTimerEvent(ALLEGRO_EVENT ev){
 	if(al_get_timer_started(upTimer)){
 		if(ev.timer.source == upTimer){
-			if(al_get_timer_count(upTimer) >= (upTime - (player->getSpeed()*0.1))){
+			if(al_get_timer_count(upTimer) >= (upTime)){
 				al_stop_timer(upTimer);
 				al_set_timer_count(upTimer, 0);
 			} 
@@ -78,7 +78,10 @@ void speedTimerEvent(){
 
 			player->setGround(false);
 			for (it = begin(groundVector); it != end(groundVector); it++){
-				it->move(speed);
+				if(al_get_timer_started(upTimer) && speed > 2)
+					it->move(speed - int(speed*0.2 + 1));
+				else
+					it->move(speed);
 
 				if (it->getX() + 300 <= 0)
 						it->create(lastX, lastY, speed);

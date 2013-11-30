@@ -77,7 +77,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 					gamePos = 1;
 					groundVectorDestroy();
 				}
-				if(gamePos == 1)
+				else if(gamePos == 1)
 					if(menuText == 1)
 						temp = true;
 					else
@@ -90,10 +90,11 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 			}
 
 			// SPACE button
-			case ALLEGRO_KEY_SPACE:{
-				audio->jump(Volume, Pan);
-				if (player->getGround())
+			case ALLEGRO_KEY_SPACE:{				
+				if (player->getGround()){
+					audio->jump(Volume, Pan);
 					startTimer(1);
+				}
 				break;
 			}
 			// ENTER button
@@ -145,11 +146,14 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 									case(1):{
 										iniWrite("Display", "Width", to_string(resWidth[resPos]));
 										iniWrite("Display", "Height", to_string(resHeight[resPos]));
+										iniWrite("Display", "FPS", to_string(tempFPS));
 										destroy();
 										initialize();
 										break;
 									}
 									case(2):{
+										iniWrite("Display", "Width", to_string(resWidth[resPos]));
+										iniWrite("Display", "Height", to_string(resHeight[resPos]));
 										iniWrite("Display", "FPS", to_string(tempFPS));
 										destroy();
 										initialize();
@@ -167,11 +171,13 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 								switch (menuSelect){
 									case(1):{
 										iniWrite("Audio", "Volume", to_string(tempVolume));
+										iniWrite("Audio", "Pan", round(tempPan));
 										destroy();
 										initialize();
 										break;
 									}
 									case(2):{
+										iniWrite("Audio", "Volume", to_string(tempVolume));
 										iniWrite("Audio", "Pan", round(tempPan));
 										destroy();
 										initialize();
@@ -190,6 +196,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 					}
 					case(4):{
 						gamePos = 1;
+						menuText = 1;
 						groundVectorDestroy();
 						break;
 					}
@@ -292,6 +299,165 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 		}
 	}
 	return temp;
+}
+
+bool mouseEvent(ALLEGRO_EVENT ev){
+	bool mouseTemp = false;
+		if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+			if(gamePos == 1){
+				if(ev.mouse.x <= (WIDTH/2 + 150) && ev.mouse.x >= (WIDTH/2 - 150)){
+					if(ev.mouse.y <= (HEIGHT/8*3 + 50) && ev.mouse.y >= (HEIGHT/8*3 - 50)){
+						switch(menuText){
+							case(1):{
+								gamePos = 2;
+								break;
+							}
+							case(2):{
+								menuText = 3;
+								break;
+							}
+							case(3):{
+								iniWrite("Display", "Width", to_string(resWidth[resPos]));
+								iniWrite("Display", "Height", to_string(resHeight[resPos]));
+								iniWrite("Display", "FPS", to_string(tempFPS));
+								destroy();
+								initialize();
+								break;
+							}
+							case(4):{
+								iniWrite("Audio", "Volume", to_string(tempVolume));
+								destroy();
+								initialize();	
+								break;
+							}
+						}
+					}
+					if(ev.mouse.y <= (HEIGHT/8*4 + 50) && ev.mouse.y >= (HEIGHT/8*4 - 50)){
+						switch(menuText){
+							case(1):{
+								menuText = 2;
+								break;
+							}
+							case(2):{
+								menuText = 4;
+								break;
+							}
+							case(3):{
+								iniWrite("Display", "Width", to_string(resWidth[resPos]));
+								iniWrite("Display", "Height", to_string(resHeight[resPos]));
+								iniWrite("Display", "FPS", to_string(tempFPS));
+								destroy();
+								initialize();
+								break;
+							}
+							case(4):{
+								iniWrite("Audio", "Volume", to_string(tempVolume));
+								iniWrite("Audio", "Pan", round(tempPan));
+								destroy();
+								initialize();	
+								break;
+							}
+						}
+					}
+					if(ev.mouse.y <= (HEIGHT/8*5 + 50) && ev.mouse.y >= (HEIGHT/8*5 - 50)){
+						switch(menuText){
+							case(1):{
+								mouseTemp = true;
+								break;
+							}
+							case(2):{
+								menuText = 1;
+								break;
+							}
+							case(3):{
+								menuText = 2;
+								break;
+							}
+							case(4):{
+								menuText = 2;
+								break;
+							}
+						}
+					}
+				}				
+			}
+			else if(gamePos == 3){
+				if (player->getGround()){
+					audio->jump(Volume, Pan);
+					startTimer(1);
+				}
+			}
+			else if(gamePos == 4){
+				gamePos = 1;
+				menuText = 1;
+			}
+		} else if(ev.type == ALLEGRO_EVENT_MOUSE_AXES || ev.type == ALLEGRO_EVENT_MOUSE_ENTER_DISPLAY){
+			if(ev.mouse.x <= (WIDTH/2 + 150) && ev.mouse.x >= (WIDTH/2 - 150)){
+				if(ev.mouse.y <= (HEIGHT/8*3 + 50) && ev.mouse.y >= (HEIGHT/8*3 - 50)){
+					switch(menuText){
+						case(3):{
+							if(ev.mouse.dz > 0)
+								if(resPos != resolutions - 1)
+									resPos += 1;
+								else
+									resPos = 0;
+							else if(ev.mouse.dz < 0)
+								if(resPos != 0)
+									resPos -= 1;
+								else
+									resPos = resolutions - 1;
+							break;
+						}
+						case(4):{
+							if(ev.mouse.dz > 0)
+								if(tempVolume != 100)
+									tempVolume += 1;
+								else
+									resPos = 0;
+							else if(ev.mouse.dz < 0)
+								if(resPos != 0)
+									resPos -= 1;
+								else
+									resPos = resolutions - 1;							
+							break;
+						}
+					}
+					menuSelect = 1;
+				}
+				if(ev.mouse.y <= (HEIGHT/8*4 + 50) && ev.mouse.y >= (HEIGHT/8*4 - 50)){
+					switch(menuText){
+						case(3):{
+							if(ev.mouse.dz > 0)
+									tempFPS += 5;
+							else if(ev.mouse.dz < 0)
+								if(tempFPS != 5)
+									tempFPS -= 5;
+								else
+									tempFPS = 5;
+							break;
+						}
+						case(4):{
+							if(ev.mouse.dz > 0)
+								if(tempPan < 1)
+									tempPan += 0.1;
+								else
+									tempPan = 1;
+							else if(ev.mouse.dz < 0)
+								if(tempPan > -1)
+									tempPan -= 0.1;
+								else
+									tempPan = -1;
+							break;
+						}
+					}
+					menuSelect = 2;
+				}
+				if(ev.mouse.y <= (HEIGHT/8*5 + 50) && ev.mouse.y >= (HEIGHT/8*5 - 50)){
+					menuSelect = 3;
+				}
+			}
+		}
+	return mouseTemp;
 }
 
 /*
@@ -397,6 +563,8 @@ bool Events(){
 		return true;
 
 	if(keyPressEvent(ev))
+		return true;
+	if(mouseEvent(ev))
 		return true;
 	
 	drawEvent();

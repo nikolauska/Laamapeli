@@ -15,6 +15,7 @@ class Draw{
 		void player(int, int); 
 		void ground(int, int);
 		void bg();
+		void Mouse(int, int);
 
 		void endText(int);
 		void gameText(int, int);
@@ -142,6 +143,10 @@ inline void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, 
 			break;
 		}
 	}
+}
+
+inline void Draw::Mouse(int x, int y){
+	al_draw_bitmap(lamapic, x, y, NULL);
 }
 
 inline Draw::~Draw(){
