@@ -2,10 +2,11 @@
 #include "SimpleIni.h"
 
 CSimpleIniA* ini;
+string folder;
 
 void iniWrite(string section, string key, string newValue){	
 	ini->SetValue(section.c_str(), key.c_str(), newValue.c_str());
-	ini->SaveFile("Data/Config/Settings.ini");
+	ini->SaveFile("Settings.ini");
 }
 
 string iniRead(string section, string key, string defaultValue){
@@ -18,7 +19,7 @@ string iniRead(string section, string key, string defaultValue){
 void iniInitialize(){
 	ini = new CSimpleIniA();
 	ini->SetUnicode();
-	ini->LoadFile("Data/Config/Settings.ini");
+	ini->LoadFile("Settings.ini");
 	
 	WIDTH = atoi(iniRead("Display","Width","1280").c_str());
 	HEIGHT = atoi(iniRead("Display","Height","720").c_str());
@@ -36,6 +37,8 @@ void iniInitialize(){
 	scoreTime = atof(iniRead("Game","scoreTime","0.2").c_str());
 	speedScore = atof(iniRead("Game","speedScore","100").c_str());
 	startSpeed = atof(iniRead("Game","startSpeed","2").c_str());
+
+	folder = iniRead("Folder","Folder","Default");
 }
 
 void getResPos(){
@@ -49,14 +52,6 @@ void getResPos(){
 	}
 }
 
-void loadingScreen(){
-	al_init_image_addon();
-	ALLEGRO_BITMAP *loading = al_load_bitmap("Data/Pictures/loading.png");
-	al_draw_scaled_bitmap(loading, 0, 0, 1920, 1080, 0, 0, WIDTH, HEIGHT, NULL);
-	// Flip backbuffer to screen
-	al_flip_display();
-	al_clear_to_color(al_map_rgb(0,0,0));
-}
 
 string round(float x) {
     stringstream ss;

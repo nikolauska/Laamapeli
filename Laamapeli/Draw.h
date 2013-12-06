@@ -3,75 +3,108 @@
 
 string round(float);
 
+
 class Draw{
 	private:
 		int WIDTH;
 		int HEIGHT;
+		int groundW;
+		int groundH;
+		int playerW;
+		int playerH;
+		int menubgW;
+		int menubgH;
+		int ingamebgW;
+		int ingamebgH;
+		int endbgW;
+		int endbgH;
+		int selectorW;
+		int selectorH;
 
 	public:
-		Draw(int, int);
+		Draw(int, int, string);
 		~Draw();
 
 		void player(int, int); 
 		void ground(int, int);
 		void bg();
-		void Mouse(int, int);
 
 		void endText(int);
 		void gameText(int, int);
 
 		void menu(int, int, int, int, int, int, float);
 
-		int picHeight(){return al_get_bitmap_height(lamapic);}
-		int picWidth(){return al_get_bitmap_width(lamapic);}
+		int picHeight(){return 120;}
+		int picWidth(){return 120;}
 
-		ALLEGRO_FONT *font18;
-		ALLEGRO_FONT *font42;
-		ALLEGRO_BITMAP *lamapic;
-		ALLEGRO_BITMAP *groundpic;
-		ALLEGRO_BITMAP *bg1080;
-		ALLEGRO_BITMAP *menubg1080;
-		ALLEGRO_BITMAP *endbg1080;
-		ALLEGRO_BITMAP *msel;
+		ALLEGRO_FONT *font18, *font42;
+		ALLEGRO_BITMAP *playerpic, *groundpic, *ingamebg, *menubg, *endbg, *msel;
 };
 
 
-inline Draw::Draw(int HEIGHT, int WIDTH){
-	al_init_font_addon(); 
-	al_init_ttf_addon();	
-	
-	font18 = al_load_font("Data/Font/blood.ttf", 24, 0);
-	font42 = al_load_font("Data/Font/blood.ttf", 42, 0);
+inline Draw::Draw(int HEIGHT, int WIDTH, string folder){
+	string temp = folder + "/Font/font.ttf";
+	font18 = al_load_font(temp.c_str(), 24, 0);
+	font42 = al_load_font(temp.c_str(), 42, 0);
 
 	//Initializing pictures
-	lamapic = al_load_bitmap("Data/Pictures/lamapic.png");
-	groundpic = al_load_bitmap("Data/Pictures/ground.png");
-	bg1080 = al_load_bitmap("Data/Pictures/bg1080.png");
-	menubg1080 = al_load_bitmap("Data/Pictures/menubg1080.png");
-	endbg1080 = al_load_bitmap("Data/Pictures/endbg1080.png");
-	msel = al_load_bitmap("Data/Pictures/selection.png");
+	temp = folder + "/Pictures/player.png";
+	if(!(playerpic = al_load_bitmap(temp.c_str())))
+		throw "Picture for player not found! \nWe suggest to check if filename is correct in 'Pictures' folder. \nFilename for this file is 'player.png'";
+
+	temp = folder + "/Pictures/ground.png";
+	if(!(groundpic = al_load_bitmap(temp.c_str())))
+		throw "Picture for ground not found! \nWe suggest to check if filename is correct in 'Pictures' folder. \nFilename for this file is 'ground.png'";
+
+	temp = folder + "/Pictures/ingame.png";
+	if(!(ingamebg = al_load_bitmap(temp.c_str())))
+		throw "Backround for ingame not found! \nWe suggest to check if filename is correct in 'Pictures' folder. \nFilename for this file is 'ingame.png'";
+
+	temp = folder + "/Pictures/menu.png";
+	if(!(menubg = al_load_bitmap(temp.c_str())))
+		throw "Backround for menu not found! \nWe suggest to check if filename is correct in 'Pictures' folder. \nFilename for this file is 'menu.png'";
+
+	temp = folder + "/Pictures/end.png";
+	if(!(endbg = al_load_bitmap(temp.c_str())))
+		throw "Backround for endscreen not found! \nWe suggest to check if filename is correct in 'Pictures' folder. \nFilename for this file is 'end.png'";
+
+	temp = folder + "/Pictures/selection.png";
+	if(!(msel = al_load_bitmap(temp.c_str())))
+		throw "Picture for menuselectors not found! \nWe suggest to check if filename is correct in 'Pictures' folder. \nFilename for this file is 'selection.png'";
 
 	this->HEIGHT = HEIGHT;
 	this->WIDTH = WIDTH;
+	this->groundW = al_get_bitmap_width(groundpic);
+	this->groundH = al_get_bitmap_height(groundpic);
+	this->playerW = al_get_bitmap_width(playerpic);
+	this->playerH = al_get_bitmap_height(playerpic);
+	this->menubgW = al_get_bitmap_width(menubg);
+	this->menubgH = al_get_bitmap_height(menubg);
+	this->ingamebgW = al_get_bitmap_width(ingamebg);
+	this->ingamebgH = al_get_bitmap_height(ingamebg);
+	this->endbgW = al_get_bitmap_width(endbg);
+	this->endbgH = al_get_bitmap_height(endbg);
+	this->selectorW = al_get_bitmap_width(msel);
+	this->selectorH = al_get_bitmap_height(msel);
 }
 
 inline void Draw::player(int x, int y){
-	al_draw_bitmap(lamapic, x, y, NULL);
+	al_draw_scaled_bitmap(playerpic, 0, 0, this->playerW, this->playerH, x, y, 120, 120, NULL);
 }
 
 inline void Draw::ground(int x, int y){
-	al_draw_bitmap(groundpic, x, y, NULL);
+	al_draw_scaled_bitmap(groundpic, 0, 0, this->groundW, this->groundH, x, y, 300, 30, NULL);
 }
 
 
 
 inline void Draw::bg(){
 	//bitmap, source x, source y, source width, source height, destination x, destination y, destination width, destination height, flags
-	al_draw_scaled_bitmap(bg1080, 0, 0, 1920, 1080, 0, 0, this->WIDTH, this->HEIGHT, NULL);
+	al_draw_scaled_bitmap(ingamebg, 0, 0, this->ingamebgW, this->ingamebgH, 0, 0, this->WIDTH, this->HEIGHT, NULL);
 }
 
 inline void Draw::endText(int score){
-	al_draw_scaled_bitmap(endbg1080, 0, 0, 1920, 1080, 0, 0, this->WIDTH, this->HEIGHT, NULL);
+	al_draw_scaled_bitmap(endbg, 0, 0, this->endbgW, this->endbgH, 0, 0, this->WIDTH, this->HEIGHT, NULL);
 
 	al_draw_textf(font18, al_map_rgb(255, 0, 0), this->WIDTH / 2, this->HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i", score);
 }
@@ -82,11 +115,8 @@ inline void Draw::gameText(int score, int speed){
 }
 
 inline void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, int Volume, float Pan){
-	al_draw_scaled_bitmap(menubg1080, 0, 0, 1920, 1080, 0, 0, this->WIDTH, this->HEIGHT, NULL);
+	al_draw_scaled_bitmap(menubg, 0, 0, this->menubgW, this->menubgH, 0, 0, this->WIDTH, this->HEIGHT, NULL);
 
-	const char* text1C;
-	const char* text2C;
-	const char* text3C;
 	string text1 = "";
 	string text2 = "";
 	string text3 = "";
@@ -118,9 +148,9 @@ inline void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, 
 		}
 	}
 
-	text1C = text1.c_str();
-	text2C = text2.c_str();
-	text3C = text3.c_str();
+	const char* text1C = text1.c_str();
+	const char* text2C = text2.c_str();
+	const char* text3C = text3.c_str();
 
 	al_draw_text(font18, al_map_rgb(255, 0, 0), this->WIDTH/2, this->HEIGHT/8*3, ALLEGRO_ALIGN_CENTER, text1C);
 	al_draw_text(font18, al_map_rgb(255, 0, 0), this->WIDTH/2, this->HEIGHT/8*4, ALLEGRO_ALIGN_CENTER, text2C);
@@ -128,35 +158,31 @@ inline void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, 
 
 	switch(selection){
 		case(1):{
-			al_draw_bitmap(msel, this->WIDTH/2 + (al_get_text_width(font18,text1C)/2), this->HEIGHT/8*3 -14, NULL);
-			al_draw_bitmap(msel, this->WIDTH/2 - (al_get_text_width(font18,text1C)/2) - (picWidth()/2.7), this->HEIGHT/8*3 -14, ALLEGRO_FLIP_HORIZONTAL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text1C)/2), this->HEIGHT/8*3 -14, 40, 50, NULL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 - (al_get_text_width(font18,text1C)/2) - (picWidth()/2.7), this->HEIGHT/8*3 -14, 40, 50, ALLEGRO_FLIP_HORIZONTAL);
 			break;
 		}
 		case(2):{
-			al_draw_bitmap(msel, this->WIDTH/2 + (al_get_text_width(font18,text2C)/2), this->HEIGHT/8*4 -14, NULL);
-			al_draw_bitmap(msel, this->WIDTH/2 - (al_get_text_width(font18,text2C)/2) - (picWidth()/2.7), this->HEIGHT/8*4 -14, ALLEGRO_FLIP_HORIZONTAL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text1C)/2), this->HEIGHT/8*4 -14, 40, 50, NULL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 - (al_get_text_width(font18,text1C)/2) - (picWidth()/2.7), this->HEIGHT/8*4 -14, 40, 50, ALLEGRO_FLIP_HORIZONTAL);
 			break;
 		}
 		case(3):{
-			al_draw_bitmap(msel, this->WIDTH/2 + (al_get_text_width(font18,text3C)/2), this->HEIGHT/8*5 -14, NULL);
-			al_draw_bitmap(msel, this->WIDTH/2 - (al_get_text_width(font18,text3C)/2) - (picWidth()/2.7), this->HEIGHT/8*5 -14, ALLEGRO_FLIP_HORIZONTAL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text1C)/2), this->HEIGHT/8*5 -14, 40, 50, NULL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 - (al_get_text_width(font18,text1C)/2) - (picWidth()/2.7), this->HEIGHT/8*5 -14, 40, 50, ALLEGRO_FLIP_HORIZONTAL);
 			break;
 		}
 	}
 }
 
-inline void Draw::Mouse(int x, int y){
-	al_draw_bitmap(lamapic, x, y, NULL);
-}
-
 inline Draw::~Draw(){
 	al_destroy_font(font18);
 	al_destroy_font(font42);
-	al_destroy_bitmap(lamapic);
+	al_destroy_bitmap(playerpic);
 	al_destroy_bitmap(groundpic);
-	al_destroy_bitmap(bg1080);
-	al_destroy_bitmap(menubg1080);
-	al_destroy_bitmap(endbg1080);
+	al_destroy_bitmap(ingamebg);
+	al_destroy_bitmap(menubg);
+	al_destroy_bitmap(endbg);
 	al_destroy_bitmap(msel);
 }
 #endif

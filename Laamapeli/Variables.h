@@ -10,22 +10,6 @@ extern ALLEGRO_TIMER* downTimer;
 extern ALLEGRO_TIMER* scoreTimer;
 extern ALLEGRO_TIMER* speedTimer;
 
-extern ALLEGRO_FONT *font18;
-extern ALLEGRO_FONT *font42;
-extern ALLEGRO_BITMAP *lamapic;
-extern ALLEGRO_BITMAP *groundpic;
-extern ALLEGRO_BITMAP *bg1080;
-extern ALLEGRO_BITMAP *menubg1080;
-extern ALLEGRO_BITMAP *endbg1080;
-extern ALLEGRO_BITMAP *msel;
-
-extern ALLEGRO_SAMPLE *menuSong;
-extern ALLEGRO_SAMPLE *inGameSong;
-extern ALLEGRO_SAMPLE *njak;
-extern ALLEGRO_SAMPLE *die;
-extern ALLEGRO_SAMPLE_ID MenuMusic;
-extern ALLEGRO_SAMPLE_ID InGameMusic;
-
 extern Player *player;
 extern vector<Ground> groundVector;
 extern Ground* ground;
@@ -57,4 +41,5 @@ extern int resWidth[];
 extern int resHeight[];
 extern bool redraw;
 extern int gamePos;
+extern string folder;
 #endif

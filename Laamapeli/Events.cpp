@@ -1,8 +1,5 @@
 #include "Variables.h"
 
-ALLEGRO_DISPLAY* display;
-ALLEGRO_EVENT_QUEUE* event_queue;
-
 // Class variables
 Draw* draw;
 Audio* audio;
@@ -327,6 +324,7 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 							}
 							case(4):{
 								iniWrite("Audio", "Volume", to_string(tempVolume));
+								iniWrite("Audio", "Pan", round(tempPan));
 								destroy();
 								initialize();	
 								break;
