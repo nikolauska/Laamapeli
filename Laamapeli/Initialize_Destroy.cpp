@@ -111,6 +111,8 @@ int initialize(){
 	al_register_event_source(event_queue, al_get_timer_event_source(speedTimer));
 	al_register_event_source(event_queue, al_get_mouse_event_source());
 	
+	al_destroy_font(fontLoading);
+	al_destroy_bitmap(loading);
 
 	// Start timer
 	al_start_timer(FPSTimer);

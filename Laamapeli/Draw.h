@@ -163,13 +163,13 @@ inline void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, 
 			break;
 		}
 		case(2):{
-			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text1C)/2), this->HEIGHT/8*4 -14, 40, 50, NULL);
-			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 - (al_get_text_width(font18,text1C)/2) - (picWidth()/2.7), this->HEIGHT/8*4 -14, 40, 50, ALLEGRO_FLIP_HORIZONTAL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text2C)/2), this->HEIGHT/8*4 -14, 40, 50, NULL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 - (al_get_text_width(font18,text2C)/2) - (picWidth()/2.7), this->HEIGHT/8*4 -14, 40, 50, ALLEGRO_FLIP_HORIZONTAL);
 			break;
 		}
 		case(3):{
-			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text1C)/2), this->HEIGHT/8*5 -14, 40, 50, NULL);
-			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 - (al_get_text_width(font18,text1C)/2) - (picWidth()/2.7), this->HEIGHT/8*5 -14, 40, 50, ALLEGRO_FLIP_HORIZONTAL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text3C)/2), this->HEIGHT/8*5 -14, 40, 50, NULL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 - (al_get_text_width(font18,text3C)/2) - (picWidth()/2.7), this->HEIGHT/8*5 -14, 40, 50, ALLEGRO_FLIP_HORIZONTAL);
 			break;
 		}
 	}
