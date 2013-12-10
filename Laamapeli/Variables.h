@@ -39,7 +39,6 @@ extern int tempVolume;
 extern const int resolutions;
 extern int resWidth[];
 extern int resHeight[];
-extern bool redraw;
 extern int gamePos;
 extern string folder;
 #endif

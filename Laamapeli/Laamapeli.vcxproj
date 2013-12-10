@@ -79,10 +79,14 @@
     <ClInclude Include="Variables.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Events.cpp" />
+    <ClCompile Include="Ground.cpp" />
     <ClCompile Include="Initialize_Destroy.cpp" />
     <ClCompile Include="Ini_other.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Timers.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
