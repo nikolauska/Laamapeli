@@ -100,7 +100,7 @@ void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, int Vol
 		}
 		case(4):{
 			text1 = "Volume: " + to_string(Volume);
-			text2 = "Pan: " + round(Pan);
+			text2 = "Pan: " + to_string(round(Pan));
 			text3 = "Back";
 			break;
 		}

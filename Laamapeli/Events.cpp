@@ -12,7 +12,6 @@ void startTimer(int);
 int initialize();
 void destroy();
 void groundVectorDestroy();
-string round(float);
 void iniWrite(string, string, string);
 
 
@@ -158,7 +157,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 									case(1):{ // top
 										// Save values currently shown in screen to ini file and initialize game again
 										iniWrite("Audio", "Volume", to_string(tempVolume));
-										iniWrite("Audio", "Pan", round(tempPan));
+										iniWrite("Audio", "Pan", to_string(round(tempPan)));
 										destroy();
 										initialize();
 										break;
@@ -166,7 +165,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 									case(2):{ // middle
 										// Save values currently shown in screen to ini file and initialize game again
 										iniWrite("Audio", "Volume", to_string(tempVolume));
-										iniWrite("Audio", "Pan", round(tempPan));
+										iniWrite("Audio", "Pan", to_string(round(tempPan)));
 										destroy();
 										initialize();
 										break;
@@ -319,7 +318,7 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 							case(4):{ // audio menu
 								// Save values to ini and reinitialize game
 								iniWrite("Audio", "Volume", to_string(tempVolume));
-								iniWrite("Audio", "Pan", round(tempPan));
+								iniWrite("Audio", "Pan", to_string(round(tempPan)));
 								destroy();
 								initialize();	
 								break;
@@ -348,7 +347,7 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 							case(4):{ // audio menu
 								// Save values to ini and reinitialize game
 								iniWrite("Audio", "Volume", to_string(tempVolume));
-								iniWrite("Audio", "Pan", round(tempPan));
+								iniWrite("Audio", "Pan", to_string(round(tempPan)));
 								destroy();
 								initialize();	
 								break;

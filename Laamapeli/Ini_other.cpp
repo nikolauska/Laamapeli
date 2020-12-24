@@ -58,12 +58,3 @@ void getResPos(){
 			
 	}
 }
-
-// return rounded float as a string (example 0,100000 to 0,1)
-string round(float x) {
-    stringstream ss;
-    ss << fixed;
-    ss.precision(1); // set # places after decimal
-    ss << x;
-    return ss.str();
-}

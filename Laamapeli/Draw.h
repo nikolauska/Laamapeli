@@ -1,9 +1,6 @@
 #ifndef drawDEF
 #define drawDEF
 
-string round(float);
-
-
 class Draw{
 	private:
 		int WIDTH;
