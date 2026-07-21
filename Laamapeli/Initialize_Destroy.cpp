@@ -136,13 +136,7 @@ int initialize(){
 */
 
 void groundVectorDestroy(){
-	// Destroy all classes from vector
-	for (it = groundVector.begin(); it != groundVector.end(); it++){
-		it->~Ground();
-	}
-
-	// Destroy vector 
-	groundVector.erase(groundVector.begin(), groundVector.end());
+	groundVector.clear();
 }
 
 void destroy(){
