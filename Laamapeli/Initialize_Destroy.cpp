@@ -100,7 +100,6 @@ int initialize(){
 	upTimer = al_create_timer(upSpeed);
 	downTimer = al_create_timer(downSpeed);
 	scoreTimer = al_create_timer(scoreTime);
-	speedTimer = al_create_timer(startSpeed);
 
 	// create event queue
 	event_queue = al_create_event_queue();
@@ -113,7 +112,6 @@ int initialize(){
 	al_register_event_source(event_queue, al_get_timer_event_source(upTimer));
 	al_register_event_source(event_queue, al_get_timer_event_source(downTimer));
 	al_register_event_source(event_queue, al_get_timer_event_source(scoreTimer));
-	al_register_event_source(event_queue, al_get_timer_event_source(speedTimer));
 	al_register_event_source(event_queue, al_get_mouse_event_source());
 	
 	// destroy loading image and font

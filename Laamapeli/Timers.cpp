@@ -6,7 +6,6 @@ ALLEGRO_TIMER* FPSTimer;
 ALLEGRO_TIMER* upTimer;
 ALLEGRO_TIMER* downTimer;
 ALLEGRO_TIMER* scoreTimer;
-ALLEGRO_TIMER* speedTimer;
 
 Player *player;
 vector<Ground> groundVector;
@@ -21,7 +20,6 @@ void startTimer(int timer){
 		// Start inGame timers
 		al_start_timer(scoreTimer);			// start scoretimer (timeinterval for giving point)
 		al_start_timer(downTimer);			// start downtimer (speed in which player goes down)
-		al_start_timer(speedTimer);			// start speedtimer (speed in which ground is moving below player)
 	}
 }
 
@@ -61,36 +59,32 @@ void scoreTimerEvent(ALLEGRO_EVENT ev) {
 }
 
 /*
-*	Beginninng of speedTimer object!
-*	This is the function that will run if speed timer has ticked to it's specific time
-*	Here we update ground position and move out of screen grounds back to screen
+*	Beginninng of ground movement object!
+*	This function updates ground positions once per rendered frame
+*	and moves off-screen grounds back to the screen.
 *
 */
 
-void speedTimerEvent(){
-	if(al_get_timer_started(speedTimer)){																// Check if timer is speedTimer
-		if(al_get_timer_count(speedTimer) >= (1/player->getSpeed())) {									// Check if speedtimer is equal or bigger than 1/player speed
-			int tempX = player->getX();																	// Get player X position
-			int tempY = player->getY();																	// Get player Y position
-			int tempH = draw->playerHeight();															// Get player picture height
-			int tempW = draw->playerWidth();															// Get player picture width
-			int speed = player->getSpeed();																// Get player player speed
+void moveGrounds(){
+	int tempX = player->getX();
+	int tempY = player->getY();
+	int tempH = draw->playerHeight();
+	int tempW = draw->playerWidth();
+	int speed = player->getSpeed();
 
-			player->setGround(false);																	// Set player ground to false before groundcheck						
-			for (it = begin(groundVector); it != end(groundVector); it++){								// Loop through all ground classes in vector 
-				if(al_get_timer_started(upTimer) && speed > 2)											// Check if player is jumping and speed is equal or smaller than 2 (workaround for weird speedboost on jumping)
-					it->move(speed - int(speed*0.2 + 1));												// Move ground at smaller speed
-				else
-					it->move(speed);																	// Move ground at normal speed 
+	player->setGround(false);
+	for (it = begin(groundVector); it != end(groundVector); it++){
+		if(al_get_timer_started(upTimer) && speed > 2)
+			it->move(speed - int(speed*0.2 + 1));
+		else
+			it->move(speed);
 
-				if (it->getX() + 300 <= 0)																// Check if ground is outside of screen
-						it->create(lastX, lastY, speed);												// Move ground to new position to right
+		if (it->getX() + 300 <= 0)
+			it->create(lastX, lastY, speed);
 
-				if(it->getX() - 300 <= (tempX - tempW*1.5) && it->getX() + 300 - tempW/2 >= (tempX))	// Check if player is in ground in X-axel
-					if(it->getY() == (tempY + tempH))													// Check if player is in ground on Y-axel
-						player->setGround(true);														// Set player to be in ground
-			}				
-		}
+		if(it->getX() - 300 <= (tempX - tempW*1.5) && it->getX() + 300 - tempW/2 >= (tempX))
+			if(it->getY() == (tempY + tempH))
+				player->setGround(true);
 	}
 }
 
@@ -114,8 +108,11 @@ void downTimerEvent(ALLEGRO_EVENT ev){
 bool timerEvent(ALLEGRO_EVENT ev){	
 	bool tempDraw = false;					// Temporary bool to checkif it is timer to draw to screen
 	if(ev.type == ALLEGRO_EVENT_TIMER){		// Check if event is timer
-		if(ev.timer.source == FPSTimer)		// Check if event is FPSTimer
-			tempDraw = true;				// Set temp bool to true
+		if(ev.timer.source == FPSTimer) {		// Check if event is FPSTimer
+			tempDraw = true;					// Set temp bool to true
+			if (gamePos == 3)
+				moveGrounds();
+		}
 			
 		if (gamePos == 3) {					// Check if gamePos is 3 ( 3 = inGame)
 			upTimerEvent(ev);				// Run upTimerEvent
@@ -123,8 +120,6 @@ bool timerEvent(ALLEGRO_EVENT ev){
 			downTimerEvent(ev);				// Run downTimerEvent		
 
 			scoreTimerEvent(ev);			// Run scoreTimerEvent
-
-			speedTimerEvent();				// Run speedTimerEvent
 		}
 	}
 	return tempDraw;						// Return true or false

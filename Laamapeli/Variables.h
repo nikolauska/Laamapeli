@@ -8,7 +8,6 @@ extern ALLEGRO_TIMER* FPSTimer;
 extern ALLEGRO_TIMER* upTimer;
 extern ALLEGRO_TIMER* downTimer;
 extern ALLEGRO_TIMER* scoreTimer;
-extern ALLEGRO_TIMER* speedTimer;
 
 extern Player *player;
 extern vector<Ground> groundVector;
