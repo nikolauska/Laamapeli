@@ -47,22 +47,22 @@ Draw::Draw(int HEIGHT, int WIDTH, string folder){
 }
 
 void Draw::player(int x, int y){
-	al_draw_scaled_bitmap(playerpic, 0, 0, this->playerW, this->playerH, x, y, 120, 120, NULL);
+	al_draw_scaled_bitmap(playerpic, 0, 0, this->playerW, this->playerH, x, y, 120, 120, 0);
 }
 
 void Draw::ground(int x, int y){
-	al_draw_scaled_bitmap(groundpic, 0, 0, this->groundW, this->groundH, x, y, 300, 30, NULL);
+	al_draw_scaled_bitmap(groundpic, 0, 0, this->groundW, this->groundH, x, y, 300, 30, 0);
 }
 
 
 
 void Draw::bg(){
 	//bitmap, source x, source y, source width, source height, destination x, destination y, destination width, destination height, flags
-	al_draw_scaled_bitmap(ingamebg, 0, 0, this->ingamebgW, this->ingamebgH, 0, 0, this->WIDTH, this->HEIGHT, NULL);
+	al_draw_scaled_bitmap(ingamebg, 0, 0, this->ingamebgW, this->ingamebgH, 0, 0, this->WIDTH, this->HEIGHT, 0);
 }
 
 void Draw::endText(int score){
-	al_draw_scaled_bitmap(endbg, 0, 0, this->endbgW, this->endbgH, 0, 0, this->WIDTH, this->HEIGHT, NULL);
+	al_draw_scaled_bitmap(endbg, 0, 0, this->endbgW, this->endbgH, 0, 0, this->WIDTH, this->HEIGHT, 0);
 
 	al_draw_textf(font18, al_map_rgb(255, 0, 0), this->WIDTH / 2, this->HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i", score);
 }
@@ -73,7 +73,7 @@ void Draw::gameText(int score, int speed){
 }
 
 void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, int Volume, float Pan){
-	al_draw_scaled_bitmap(menubg, 0, 0, this->menubgW, this->menubgH, 0, 0, this->WIDTH, this->HEIGHT, NULL);
+	al_draw_scaled_bitmap(menubg, 0, 0, this->menubgW, this->menubgH, 0, 0, this->WIDTH, this->HEIGHT, 0);
 
 	string text1 = "";
 	string text2 = "";
@@ -116,17 +116,17 @@ void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, int Vol
 
 	switch(selection){
 		case(1):{
-			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text1C)/2), this->HEIGHT/8*3 -14, 40, 50, NULL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text1C)/2), this->HEIGHT/8*3 -14, 40, 50, 0);
 			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 - (al_get_text_width(font18,text1C)/2) - (playerWidth()/2.7), this->HEIGHT/8*3 -14, 40, 50, ALLEGRO_FLIP_HORIZONTAL);
 			break;
 		}
 		case(2):{
-			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text2C)/2), this->HEIGHT/8*4 -14, 40, 50, NULL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text2C)/2), this->HEIGHT/8*4 -14, 40, 50, 0);
 			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 - (al_get_text_width(font18,text2C)/2) - (playerWidth()/2.7), this->HEIGHT/8*4 -14, 40, 50, ALLEGRO_FLIP_HORIZONTAL);
 			break;
 		}
 		case(3):{
-			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text3C)/2), this->HEIGHT/8*5 -14, 40, 50, NULL);
+			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 + (al_get_text_width(font18,text3C)/2), this->HEIGHT/8*5 -14, 40, 50, 0);
 			al_draw_scaled_bitmap(msel, 0, 0, this->selectorW, this->selectorH, this->WIDTH/2 - (al_get_text_width(font18,text3C)/2) - (playerWidth()/2.7), this->HEIGHT/8*5 -14, 40, 50, ALLEGRO_FLIP_HORIZONTAL);
 			break;
 		}

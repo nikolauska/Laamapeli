@@ -326,7 +326,7 @@ public:
 #endif
 
         /** Strict less ordering by name of key only */
-        struct KeyOrder : std::binary_function<Entry, Entry, bool> {
+        struct KeyOrder {
             bool operator()(const Entry & lhs, const Entry & rhs) const {
                 const static SI_STRLESS isLess = SI_STRLESS();
                 return isLess(lhs.pItem, rhs.pItem);
@@ -334,7 +334,7 @@ public:
         };
 
         /** Strict less ordering by order, and then name of key */
-        struct LoadOrder : std::binary_function<Entry, Entry, bool> {
+        struct LoadOrder {
             bool operator()(const Entry & lhs, const Entry & rhs) const {
                 if (lhs.nOrder != rhs.nOrder) {
                     return lhs.nOrder < rhs.nOrder;
@@ -2620,8 +2620,14 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::DeleteString(
 # ifdef _WIN32
 #  define SI_CONVERT_WIN32
 # else
-#  define SI_CONVERT_GENERIC
+#  define SI_CONVERT_NARROW
 # endif
+#endif
+
+#ifdef SI_CONVERT_NARROW
+// ponytail: This bundle only uses the narrow API; add ConvertUTF for wide strings.
+# define SI_Case     SI_GenericCase
+# define SI_NoCase   SI_GenericNoCase
 #endif
 
 /**
@@ -3355,6 +3361,7 @@ typedef CSimpleIniTempl<char,
 typedef CSimpleIniTempl<char,
     SI_Case<char>,SI_ConvertA<char> >                   CSimpleIniCaseA;
 
+#ifndef SI_CONVERT_NARROW
 #if defined(SI_CONVERT_ICU)
 typedef CSimpleIniTempl<UChar,
     SI_NoCase<UChar>,SI_ConvertW<UChar> >               CSimpleIniW;
@@ -3365,6 +3372,7 @@ typedef CSimpleIniTempl<wchar_t,
     SI_NoCase<wchar_t>,SI_ConvertW<wchar_t> >           CSimpleIniW;
 typedef CSimpleIniTempl<wchar_t,
     SI_Case<wchar_t>,SI_ConvertW<wchar_t> >             CSimpleIniCaseW;
+#endif
 #endif
 
 #ifdef _UNICODE

@@ -11,7 +11,7 @@ void getResPos();
 
 
 void loadingScreen(string text){
-	al_draw_scaled_bitmap(loading, 0, 0, al_get_bitmap_width(loading), al_get_bitmap_height(loading), 0, 0, WIDTH, HEIGHT, NULL); // draw loading image
+	al_draw_scaled_bitmap(loading, 0, 0, al_get_bitmap_width(loading), al_get_bitmap_height(loading), 0, 0, WIDTH, HEIGHT, 0); // draw loading image
 	al_draw_text(fontLoading, al_map_rgb(255, 0, 0), WIDTH/2, HEIGHT/8*7, ALLEGRO_ALIGN_CENTER, text.c_str()); // draw text
 
 	// Flip backbuffer to screen and clear backbuffer
@@ -44,7 +44,7 @@ int initialize(){
 	// load loading image and show error if not found
 	string temp = folder + "/Pictures/loading.png";
 	if(!(loading = al_load_bitmap(temp.c_str()))){
-		al_show_native_message_box(display, "ERROR", "IMAGES", "Backround for loadingscreen not found! \nWe suggest to check if filename is correct in 'Pictures' folder. \nFilename for this file is 'loading.png'", NULL, NULL);
+		al_show_native_message_box(display, "ERROR", "IMAGES", "Backround for loadingscreen not found! \nWe suggest to check if filename is correct in 'Pictures' folder. \nFilename for this file is 'loading.png'", NULL, 0);
 		
 		al_destroy_display(display);
 		return -1;
@@ -53,7 +53,7 @@ int initialize(){
 	// load font for text and show error if not found
 	temp = folder + "/Font/font.ttf";
 	if(!(fontLoading = al_load_font(temp.c_str(), 24, 0))){
-		al_show_native_message_box(display, "ERROR", "FONT", "Font not found! \nWe suggest to check if filename is correct in 'Font' folder. \nFilename for this file is 'font.ttf'", NULL, NULL);
+		al_show_native_message_box(display, "ERROR", "FONT", "Font not found! \nWe suggest to check if filename is correct in 'Font' folder. \nFilename for this file is 'font.ttf'", NULL, 0);
 		
 		al_destroy_display(display);
 		return -1;
@@ -72,7 +72,7 @@ int initialize(){
 	try{
 		draw = new Draw(HEIGHT, WIDTH, folder);
 	} catch(const char* message) {
-		al_show_native_message_box(display, "ERROR", "IMAGES", message, NULL, NULL);
+		al_show_native_message_box(display, "ERROR", "IMAGES", message, NULL, 0);
 
 		al_destroy_display(display);
 		delete player;
@@ -85,7 +85,7 @@ int initialize(){
 	try{
 		audio = new Audio(folder);	
 	} catch(const char* message) {
-		al_show_native_message_box(display, "ERROR", "AUDIO", message, NULL, NULL);
+		al_show_native_message_box(display, "ERROR", "AUDIO", message, NULL, 0);
 
 		al_destroy_display(display);
 		delete player;
