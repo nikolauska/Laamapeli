@@ -31,10 +31,10 @@ Audio::Audio(string folder){
 }
 
 // Play jump sound
-void Audio::jump(float Volume, float Pan){al_play_sample(jumpSound, (Volume/100) +  0.2, Pan, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
+void Audio::jump(float Volume, float Pan){al_play_sample(jumpSound, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
 
 // Play end sound
-void Audio::death(float Volume, float Pan){al_play_sample(endSound, (Volume/100) + 0.2, Pan, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
+void Audio::death(float Volume, float Pan){al_play_sample(endSound, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);}
 
 // Start menu Song loop, stop it and return value to check if menu song is playing
 void Audio::loopMenu(float Volume, float Pan){al_play_sample(menuSong, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_LOOP, &MenuMusic); this->menuPlaying = true;}
@@ -42,6 +42,6 @@ void Audio::stopLoopMenu(){al_stop_sample(&MenuMusic); this->menuPlaying = false
 bool Audio::isMenuPlaying(){return this->menuPlaying;}
 
 // Start inGame Song loop, stop it and return value to check if inGame song is playing
-void Audio::loopInGame(float Volume, float Pan){al_play_sample(inGameSong, (Volume/100) - 0.1, Pan, 1.0, ALLEGRO_PLAYMODE_LOOP, &InGameMusic); this->InGamePlaying = true;}
+void Audio::loopInGame(float Volume, float Pan){al_play_sample(inGameSong, Volume/100, Pan, 1.0, ALLEGRO_PLAYMODE_LOOP, &InGameMusic); this->InGamePlaying = true;}
 void Audio::stopLoopInGame(){al_stop_sample(&InGameMusic); this->InGamePlaying = false;}
 bool Audio::isInGamePlaying(){return this->InGamePlaying;}
