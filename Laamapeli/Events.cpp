@@ -483,16 +483,12 @@ void drawEvent(){
 
 			player->start(startSpeed, WIDTH, HEIGHT); // set player start position
 	
-			ground = new Ground(HEIGHT); // create new ground class
-			ground->start(WIDTH, HEIGHT, draw->playerHeight(), lastX, lastY); //set ground postion to start
-			groundVector.push_back(*ground); // add ground to vector
-			delete ground; // delete ground from memory (it is already copied to vector)
+			groundVector.emplace_back(HEIGHT);
+			groundVector.back().start(WIDTH, HEIGHT, draw->playerHeight(), lastX, lastY);
 
 			for (int j = 0; j != int((WIDTH / 300) + 15); j++){ // loop as many times as diffrent ground are needed
-				ground = new Ground(HEIGHT); // create new ground
-				ground->create(lastX, lastY, player->getSpeed()); // set position from last ground
-				groundVector.push_back(*ground); // add ground to vector
-				delete ground; // delete ground from memory (it is already copied to vector)
+				groundVector.emplace_back(HEIGHT);
+				groundVector.back().create(lastX, lastY, player->getSpeed());
 			}
 
 			startTimer(0); // start timers (0 = speed, score and down timers

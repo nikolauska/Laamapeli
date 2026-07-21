@@ -9,7 +9,6 @@ ALLEGRO_TIMER* scoreTimer;
 
 Player *player;
 vector<Ground> groundVector;
-Ground* ground;
 vector<Ground>::iterator it;
 
 

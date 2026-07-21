@@ -11,7 +11,6 @@ extern ALLEGRO_TIMER* scoreTimer;
 
 extern Player *player;
 extern vector<Ground> groundVector;
-extern Ground* ground;
 extern vector<Ground>::iterator it;
 extern Draw* draw;
 extern Audio* audio;
