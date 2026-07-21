@@ -26,7 +26,7 @@ add_executable(Laamapeli
     Laamapeli/Timers.cpp
 )
 
-target_compile_features(Laamapeli PRIVATE cxx_std_11)
+target_compile_features(Laamapeli PRIVATE cxx_std_23)
 target_link_libraries(Laamapeli PRIVATE PkgConfig::ALLEGRO)
 
 if(MSVC)
