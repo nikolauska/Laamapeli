@@ -155,19 +155,19 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 							case(4):{ // Audio menu
 								switch (menuSelect){
 									case(1):{ // top
-										// Save values currently shown in screen to ini file and initialize game again
+										// Save and apply the values currently shown
 										iniWrite("Audio", "Volume", to_string(tempVolume));
-										iniWrite("Audio", "Pan", to_string(round(tempPan)));
-										destroy();
-										initialize();
+										iniWrite("Audio", "Pan", to_string(tempPan));
+										Volume = tempVolume;
+										Pan = tempPan;
 										break;
 									}
 									case(2):{ // middle
-										// Save values currently shown in screen to ini file and initialize game again
+										// Save and apply the values currently shown
 										iniWrite("Audio", "Volume", to_string(tempVolume));
-										iniWrite("Audio", "Pan", to_string(round(tempPan)));
-										destroy();
-										initialize();
+										iniWrite("Audio", "Pan", to_string(tempPan));
+										Volume = tempVolume;
+										Pan = tempPan;
 										break;
 									}
 									case(3):{ //down
@@ -316,11 +316,11 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 								break;
 							}
 							case(4):{ // audio menu
-								// Save values to ini and reinitialize game
+								// Save and apply the values currently shown
 								iniWrite("Audio", "Volume", to_string(tempVolume));
-								iniWrite("Audio", "Pan", to_string(round(tempPan)));
-								destroy();
-								initialize();	
+								iniWrite("Audio", "Pan", to_string(tempPan));
+								Volume = tempVolume;
+								Pan = tempPan;
 								break;
 							}
 						}
@@ -345,11 +345,11 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 								break;
 							}
 							case(4):{ // audio menu
-								// Save values to ini and reinitialize game
+								// Save and apply the values currently shown
 								iniWrite("Audio", "Volume", to_string(tempVolume));
-								iniWrite("Audio", "Pan", to_string(round(tempPan)));
-								destroy();
-								initialize();	
+								iniWrite("Audio", "Pan", to_string(tempPan));
+								Volume = tempVolume;
+								Pan = tempPan;
 								break;
 							}
 						}
@@ -413,7 +413,7 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 								else
 									tempVolume = 100;	// set to 100
 							else if(ev.mouse.dz < 0)	// mouse scroll backward
-								if(resPos != 0)			// if not 0
+								if(tempVolume != 0)			// if not 0
 									tempVolume -= 1;	// minus 1
 								else
 									tempVolume = 0;		// set to 0					
