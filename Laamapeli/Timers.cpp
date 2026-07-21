@@ -73,10 +73,7 @@ void moveGrounds(){
 
 	player->setGround(false);
 	for (it = begin(groundVector); it != end(groundVector); it++){
-		if(al_get_timer_started(upTimer) && speed > 2)
-			it->move(speed - int(speed*0.2 + 1));
-		else
-			it->move(speed);
+		it->move(speed);
 
 		if (it->getX() + 300 <= 0)
 			it->create(lastX, lastY, speed);
