@@ -5,8 +5,6 @@
 extern ALLEGRO_DISPLAY* display;
 extern ALLEGRO_EVENT_QUEUE* event_queue;
 extern ALLEGRO_TIMER* FPSTimer;
-extern ALLEGRO_TIMER* upTimer;
-extern ALLEGRO_TIMER* downTimer;
 extern ALLEGRO_TIMER* scoreTimer;
 
 extern Player *player;
@@ -20,9 +18,8 @@ extern int HEIGHT;
 extern int FPS;
 extern int Volume;
 extern float Pan; 
-extern float upTime;
-extern float upSpeed;
-extern float downSpeed;
+extern float jumpSpeed;
+extern float gravity;
 extern float scoreTime;
 extern int speedScore;
 extern int startSpeed;

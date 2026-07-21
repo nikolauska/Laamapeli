@@ -4,12 +4,12 @@
 class Player{
 	private:
 		bool onGround;
-		bool jump;
 		int x;
-		int y;
+		float y;
+		float previousY;
+		float verticalSpeed;
 		int speed;
 		int score;
-		int move;
 	public:
 		Player(){}
 		~Player(){}
@@ -17,7 +17,10 @@ class Player{
 		void start(int, int, int);
 
 		void setGround(bool);
-		bool getGround();
+		bool jump(float);
+		void update(float, float);
+		bool isFalling();
+		void land(int);
 
 		void addSpeed();
 		int getSpeed();
@@ -28,9 +31,7 @@ class Player{
 
 		int getX();
 		int getY();
-
-		void moveUp();
-		void moveDown();
+		int getPreviousY();
 };
 
 #endif

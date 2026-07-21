@@ -35,10 +35,9 @@ void iniInitialize(){
 	Pan = atof(iniRead("Audio","Pan","0").c_str());
 	tempPan = Pan;
 
-	// timer values
-	upTime = atof(iniRead("Game","upTime","36").c_str());
-	upSpeed = atof(iniRead("Game","upSpeed","0.04").c_str());
-	downSpeed = atof(iniRead("Game","downSpeed","0.05").c_str());
+	// gameplay values
+	jumpSpeed = atof(iniRead("Game","jumpSpeed","600").c_str());
+	gravity = atof(iniRead("Game","gravity","900").c_str());
 	scoreTime = atof(iniRead("Game","scoreTime","0.2").c_str());
 	speedScore = atof(iniRead("Game","speedScore","100").c_str());
 	startSpeed = atof(iniRead("Game","startSpeed","2").c_str());

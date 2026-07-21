@@ -97,8 +97,6 @@ int initialize(){
 	loadingScreen("Loading Timers...");
 	// Create timers 
 	FPSTimer = al_create_timer(1.0 / FPS);
-	upTimer = al_create_timer(upSpeed);
-	downTimer = al_create_timer(downSpeed);
 	scoreTimer = al_create_timer(scoreTime);
 
 	// create event queue
@@ -109,8 +107,6 @@ int initialize(){
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_timer_event_source(FPSTimer));
-	al_register_event_source(event_queue, al_get_timer_event_source(upTimer));
-	al_register_event_source(event_queue, al_get_timer_event_source(downTimer));
 	al_register_event_source(event_queue, al_get_timer_event_source(scoreTimer));
 	al_register_event_source(event_queue, al_get_mouse_event_source());
 	
@@ -144,8 +140,6 @@ void destroy(){
 	// destroy allegro stuff
 	al_destroy_event_queue(event_queue);
 	al_destroy_timer(FPSTimer);
-	al_destroy_timer(upTimer);
-	al_destroy_timer(downTimer);
 	al_destroy_timer(scoreTimer);
 	al_destroy_display(display);
 

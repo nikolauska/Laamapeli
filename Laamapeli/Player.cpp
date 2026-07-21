@@ -3,25 +3,48 @@
 // Player start values
 void Player::start(int startSpeed, int W, int H){
 	this->onGround = true;
-	this->jump = false;
 	this->speed = startSpeed; 
 	this->score = 0;
-	this->move = 6;
 	this->x = W/8;
 	this->y = H/2;
+	this->previousY = this->y;
+	this->verticalSpeed = 0;
 }
 
-// Get/Set player ground value
+// Set player ground value
 void Player::setGround(bool onGround){ this->onGround = onGround; }
-bool Player::getGround(){ return this->onGround; }
 
-// Move player up and down for jumping
-void Player::moveUp(){this->y -= this->move;}
-void Player::moveDown(){this->y += this->move;}
+// Update vertical movement
+bool Player::jump(float speed){
+	if(!this->onGround)
+		return false;
+
+	this->verticalSpeed = -speed;
+	this->onGround = false;
+	return true;
+}
+
+void Player::update(float gravity, float seconds){
+	this->previousY = this->y;
+	if(!this->onGround){
+		this->verticalSpeed += gravity * seconds;
+		this->y += this->verticalSpeed * seconds;
+	}
+}
+
+bool Player::isFalling(){return this->verticalSpeed >= 0;}
+
+void Player::land(int y){
+	this->y = y;
+	this->previousY = y;
+	this->verticalSpeed = 0;
+	this->onGround = true;
+}
 
 // Get player position
 int Player::getX(){ return this->x; }
 int Player::getY(){ return this->y; }
+int Player::getPreviousY(){ return this->previousY; }
 
 // Add\Get player speed
 void Player::addSpeed(){this->speed += 1;}

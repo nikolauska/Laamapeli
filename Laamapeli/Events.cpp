@@ -7,8 +7,6 @@ float tempPan;
 int tempFPS;
 int tempVolume;
 
-void timerInitalize(ALLEGRO_EVENT_QUEUE*);
-void startTimer(int);
 int initialize();
 void destroy();
 void groundVectorDestroy();
@@ -68,11 +66,9 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 			case ALLEGRO_KEY_SPACE:{
 				// gamePOs equalt to 3 (ingame)
 				if(gamePos == 3) {
-					// If player is in ground then player jumpsound and start uptimer so player will go up
-					if (player->getGround()){
+					// Jump when the player is standing on a platform
+					if (player->jump(jumpSpeed))
 						audio->jump(Volume, Pan);
-						startTimer(1); // 1 (upTimer)
-					}
 				}
 				break;
 			}
@@ -377,11 +373,9 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 				}				
 			}
 			else if(gamePos == 3){ // ingame
-				// if player in ground then jump and play jump sound
-				if (player->getGround()){
+				// Jump when the player is standing on a platform
+				if (player->jump(jumpSpeed))
 					audio->jump(Volume, Pan);
-					startTimer(1);
-				}
 			}
 			else if(gamePos == 4){ // end screen
 				// Go to menu and destroy ground vector
@@ -491,7 +485,7 @@ void drawEvent(){
 				groundVector.back().create(lastX, lastY, player->getSpeed());
 			}
 
-			startTimer(0); // start timers (0 = speed, score and down timers
+			al_start_timer(scoreTimer);
 			break;
 		}
 		case(3):{ // ingame
