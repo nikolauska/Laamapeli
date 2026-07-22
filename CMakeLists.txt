@@ -19,11 +19,10 @@ add_executable(Laamapeli
     Laamapeli/Draw.cpp
     Laamapeli/Events.cpp
     Laamapeli/Ground.cpp
-    Laamapeli/Initialize_Destroy.cpp
+    Laamapeli/GameState.cpp
     Laamapeli/Settings.cpp
     Laamapeli/Main.cpp
     Laamapeli/Player.cpp
-    Laamapeli/Timers.cpp
 )
 
 target_compile_features(Laamapeli PRIVATE cxx_std_23)
