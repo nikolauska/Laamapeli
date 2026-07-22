@@ -19,10 +19,10 @@ vector<Ground>::iterator it;
 *	Speed i update only certain point interval
 */
 
-void scoreTimerEvent(ALLEGRO_EVENT ev) {
+void scoreTimerEvent(ALLEGRO_EVENT ev, const Settings& settings) {
 	if(ev.timer.source == scoreTimer){							// Check if timer is scoreTimer
 		player->addScore();										// Add point to player
-		if(al_get_timer_count(scoreTimer) % speedScore == 0)	// Check if score equals to interval speed is added
+		if(al_get_timer_count(scoreTimer) % settings.speedScore == 0)	// Check if score equals to interval speed is added
 			player->addSpeed();									// Add speed in which ground is moving to left
 	}
 }
@@ -64,20 +64,20 @@ void moveGrounds(){
 *
 */
 
-bool timerEvent(ALLEGRO_EVENT ev){	
+bool timerEvent(ALLEGRO_EVENT ev, const Settings& settings){
 	bool tempDraw = false;					// Temporary bool to checkif it is timer to draw to screen
 	if(ev.type == ALLEGRO_EVENT_TIMER){		// Check if event is timer
 		if(ev.timer.source == FPSTimer) {		// Check if event is FPSTimer
 			tempDraw = true;					// Set temp bool to true
 			if (gamePos == 3) {
-				player->update(gravity, 1.0f / FPS);
+				player->update(settings.gravity, 1.0f / settings.fps);
 				moveGrounds();
 			}
 		}
 			
 		if (gamePos == 3) {					// Check if gamePos is 3 ( 3 = inGame)
 
-			scoreTimerEvent(ev);			// Run scoreTimerEvent
+			scoreTimerEvent(ev, settings);			// Run scoreTimerEvent
 		}
 	}
 	return tempDraw;						// Return true or false

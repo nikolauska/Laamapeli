@@ -6,30 +6,36 @@ ALLEGRO_DISPLAY* display;
 ALLEGRO_EVENT_QUEUE* event_queue;
 
 
-void iniInitialize();
-void getResPos();
+void getResPos(const Settings& settings){
+	resPos = 0;
+	for(int i = 0; i != resolutions; i++)
+		if(resWidth[i] == settings.width && resHeight[i] == settings.height){
+			resPos = i;
+			break;
+		}
+}
 
 
-void loadingScreen(string text){
-	al_draw_scaled_bitmap(loading, 0, 0, al_get_bitmap_width(loading), al_get_bitmap_height(loading), 0, 0, WIDTH, HEIGHT, 0); // draw loading image
-	al_draw_text(fontLoading, al_map_rgb(255, 0, 0), WIDTH/2, HEIGHT/8*7, ALLEGRO_ALIGN_CENTER, text.c_str()); // draw text
+void loadingScreen(string text, const Settings& settings){
+	al_draw_scaled_bitmap(loading, 0, 0, al_get_bitmap_width(loading), al_get_bitmap_height(loading), 0, 0, settings.width, settings.height, 0); // draw loading image
+	al_draw_text(fontLoading, al_map_rgb(255, 0, 0), settings.width/2, settings.height/8*7, ALLEGRO_ALIGN_CENTER, text.c_str()); // draw text
 
 	// Flip backbuffer to screen and clear backbuffer
 	al_flip_display();
 	al_clear_to_color(al_map_rgb(0,0,0));
 }
 
-int initialize(){
+int initialize(Settings& settings){
 
 	//Test allegro object
 	if(!al_init())										
 		return -1;
 	
 	// load varaibles from ini file
-	iniInitialize();
+	settings.load();
 
 	//create and test display object
-	if(!(display = al_create_display(WIDTH, HEIGHT)))										
+	if(!(display = al_create_display(settings.width, settings.height)))										
 		return -1;	
 
 	// Load allegro addons
@@ -42,7 +48,7 @@ int initialize(){
 	al_init_acodec_addon();
 
 	// load loading image and show error if not found
-	string temp = folder + "/Pictures/loading.png";
+	string temp = settings.folder + "/Pictures/loading.png";
 	if(!(loading = al_load_bitmap(temp.c_str()))){
 		al_show_native_message_box(display, "ERROR", "IMAGES", "Backround for loadingscreen not found! \nWe suggest to check if filename is correct in 'Pictures' folder. \nFilename for this file is 'loading.png'", NULL, 0);
 		
@@ -51,7 +57,7 @@ int initialize(){
 	}
 
 	// load font for text and show error if not found
-	temp = folder + "/Font/font.ttf";
+	temp = settings.folder + "/Font/font.ttf";
 	if(!(fontLoading = al_load_font(temp.c_str(), 24, 0))){
 		al_show_native_message_box(display, "ERROR", "FONT", "Font not found! \nWe suggest to check if filename is correct in 'Font' folder. \nFilename for this file is 'font.ttf'", NULL, 0);
 		
@@ -60,17 +66,17 @@ int initialize(){
 	}
 
 	// searching resolution postion in list
-	loadingScreen("Loading Resolutions...");
-	getResPos();
+	loadingScreen("Loading Resolutions...", settings);
+	getResPos(settings);
 
 	// load player class
-	loadingScreen("Loading Player...");
+	loadingScreen("Loading Player...", settings);
 	player = new Player();
 
 	// load draw class and catch error if it is thrown
-	loadingScreen("Loading Draw functions...");	
+	loadingScreen("Loading Draw functions...", settings);
 	try{
-		draw = new Draw(HEIGHT, WIDTH, folder);
+		draw = new Draw(settings.height, settings.width, settings.folder);
 	} catch(const char* message) {
 		al_show_native_message_box(display, "ERROR", "IMAGES", message, NULL, 0);
 
@@ -81,9 +87,9 @@ int initialize(){
 	}
 
 	// load audio class and catch error if it is thrown
-	loadingScreen("Loading Audio...");
+	loadingScreen("Loading Audio...", settings);
 	try{
-		audio = new Audio(folder);	
+		audio = new Audio(settings.folder);	
 	} catch(const char* message) {
 		al_show_native_message_box(display, "ERROR", "AUDIO", message, NULL, 0);
 
@@ -94,15 +100,15 @@ int initialize(){
 		return -1;
 	}	
 
-	loadingScreen("Loading Timers...");
+	loadingScreen("Loading Timers...", settings);
 	// Create timers 
-	FPSTimer = al_create_timer(1.0 / FPS);
-	scoreTimer = al_create_timer(scoreTime);
+	FPSTimer = al_create_timer(1.0 / settings.fps);
+	scoreTimer = al_create_timer(settings.scoreTime);
 
 	// create event queue
 	event_queue = al_create_event_queue();
 
-	loadingScreen("Loading Events...");
+	loadingScreen("Loading Events...", settings);
 	// Register events
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));

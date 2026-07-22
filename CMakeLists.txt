@@ -20,7 +20,7 @@ add_executable(Laamapeli
     Laamapeli/Events.cpp
     Laamapeli/Ground.cpp
     Laamapeli/Initialize_Destroy.cpp
-    Laamapeli/Ini_other.cpp
+    Laamapeli/Settings.cpp
     Laamapeli/Main.cpp
     Laamapeli/Player.cpp
     Laamapeli/Timers.cpp

@@ -4,16 +4,6 @@
 Draw* draw;
 Audio* audio;
 
-int WIDTH;
-int HEIGHT;
-int FPS;
-int Volume;
-float Pan; 
-float jumpSpeed;
-float gravity;
-float scoreTime;
-int speedScore;
-int startSpeed;
 int resPos;
 int lastX;
 int lastY;
@@ -23,12 +13,12 @@ int resWidth[resolutions] = {640, 800, 1024, 1280, 1280, 1366, 1600, 1600, 1680,
 int resHeight[resolutions] = {480, 600, 768, 720, 960, 768, 900, 1200, 1050, 1080};
 
 // Object variables
-int initialize();
-bool timerEvent(ALLEGRO_EVENT);
+int initialize(Settings&);
+bool timerEvent(ALLEGRO_EVENT, const Settings&);
 bool displayCloseEvent(ALLEGRO_EVENT);
-bool keyPressEvent(ALLEGRO_EVENT);
-bool mouseEvent(ALLEGRO_EVENT);
-void drawEvent();
+bool keyPressEvent(ALLEGRO_EVENT, Settings&);
+bool mouseEvent(ALLEGRO_EVENT, Settings&);
+void drawEvent(const Settings&);
 void destroy();
 
 bool redraw = false;
@@ -42,28 +32,29 @@ bool redraw = false;
 
 int main(int argc, char **argv)
 {	
-	if(initialize() == -1)										// running initialize 
+	Settings settings;
+	if(initialize(settings) == -1)										// running initialize
 		return -1;
 
 	while(true) {	
 		ALLEGRO_EVENT ev;										// New event
 		al_wait_for_event(event_queue, &ev);					// wait for event to arrive
 
-		if(timerEvent(ev))										// check for timers
+		if(timerEvent(ev, settings))										// check for timers
 			redraw = true;										// if return true then redraw on true										
 
 		if(displayCloseEvent(ev))								// Check if user has closed game from red X
 			break;												// returns true if has closed window
 
-		if(keyPressEvent(ev))									// Check if player has pressed keyboard button
+		if(keyPressEvent(ev, settings))									// Check if player has pressed keyboard button
 			break;												// Returns true if player pressed ESC on menu or pressed enter on quit
 
-		if(mouseEvent(ev))										// Check for muose events
+		if(mouseEvent(ev, settings))										// Check for muose events
 			break;												// return true if player press quit with mouse
 		
 		if(redraw && al_is_event_queue_empty(event_queue)) {    // Check if redraw is true and event queue is empty
 			redraw = false;										// set redraw to false
-			drawEvent();										// draw stuff to screen
+			drawEvent(settings);										// draw stuff to screen
 		}
 	}	
 

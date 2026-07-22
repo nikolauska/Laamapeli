@@ -1,6 +1,7 @@
 #ifndef VariablesDEF
 #define VariablesDEF
 #include "Include.h"
+#include "Settings.h"
 
 extern ALLEGRO_DISPLAY* display;
 extern ALLEGRO_EVENT_QUEUE* event_queue;
@@ -13,27 +14,13 @@ extern vector<Ground>::iterator it;
 extern Draw* draw;
 extern Audio* audio;
 
-extern int WIDTH;
-extern int HEIGHT;
-extern int FPS;
-extern int Volume;
-extern float Pan; 
-extern float jumpSpeed;
-extern float gravity;
-extern float scoreTime;
-extern int speedScore;
-extern int startSpeed;
 extern int resPos;
 extern int lastX;
 extern int lastY;
 
-extern float tempPan;
-extern int tempFPS;
-extern int tempVolume;
 
 extern const int resolutions;
 extern int resWidth[];
 extern int resHeight[];
 extern int gamePos;
-extern string folder;
 #endif

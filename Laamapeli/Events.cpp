@@ -3,14 +3,10 @@
 int menuSelect = 1;
 int menuText = 1;	// 1 = main, 2 = settings, 3 = graphics, 4 = audio
 int gamePos = 1;	// 1 = menu, 2 = start, 3 = inGame, 4 = end
-float tempPan;
-int tempFPS;
-int tempVolume;
 
-int initialize();
+int initialize(Settings&);
 void destroy();
 void groundVectorDestroy();
-void iniWrite(string, string, string);
 
 
 /*
@@ -34,7 +30,7 @@ bool displayCloseEvent(ALLEGRO_EVENT ev){
 *
 */
 
-bool keyPressEvent(ALLEGRO_EVENT ev){
+bool keyPressEvent(ALLEGRO_EVENT ev, Settings& settings){
 	bool temp = false;	// Temporary bool for returning if player wnts to end game
 
 	if(ev.type == ALLEGRO_EVENT_KEY_DOWN){	// Check if player presses keyboard button
@@ -67,8 +63,8 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 				// gamePOs equalt to 3 (ingame)
 				if(gamePos == 3) {
 					// Jump when the player is standing on a platform
-					if (player->jump(jumpSpeed))
-						audio->jump(Volume, Pan);
+					if (player->jump(settings.jumpSpeed))
+						audio->jump(settings.volume, settings.pan);
 				}
 				break;
 			}
@@ -124,20 +120,16 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 								switch (menuSelect){
 									case(1):{ // top
 										// Save values currently shown in screen to  ini file and initialize game again
-										iniWrite("Display", "Width", to_string(resWidth[resPos]));
-										iniWrite("Display", "Height", to_string(resHeight[resPos]));
-										iniWrite("Display", "FPS", to_string(tempFPS));
+										settings.saveDisplay(resWidth[resPos], resHeight[resPos], settings.pendingFPS);
 										destroy();
-										initialize();
+										initialize(settings);
 										break;
 									}
 									case(2):{ // middle
 										// Save values currently shown in screen to  ini file and initialize game again
-										iniWrite("Display", "Width", to_string(resWidth[resPos]));
-										iniWrite("Display", "Height", to_string(resHeight[resPos]));
-										iniWrite("Display", "FPS", to_string(tempFPS));
+										settings.saveDisplay(resWidth[resPos], resHeight[resPos], settings.pendingFPS);
 										destroy();
-										initialize();
+										initialize(settings);
 										break;
 									}
 									case(3):{ //down
@@ -152,18 +144,12 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 								switch (menuSelect){
 									case(1):{ // top
 										// Save and apply the values currently shown
-										iniWrite("Audio", "Volume", to_string(tempVolume));
-										iniWrite("Audio", "Pan", to_string(tempPan));
-										Volume = tempVolume;
-										Pan = tempPan;
+										settings.saveAudio(settings.pendingVolume, settings.pendingPan);
 										break;
 									}
 									case(2):{ // middle
 										// Save and apply the values currently shown
-										iniWrite("Audio", "Volume", to_string(tempVolume));
-										iniWrite("Audio", "Pan", to_string(tempPan));
-										Volume = tempVolume;
-										Pan = tempPan;
+										settings.saveAudio(settings.pendingVolume, settings.pendingPan);
 										break;
 									}
 									case(3):{ //down
@@ -215,8 +201,8 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 									break;
 								}
 								case(2):{ // middle
-									if(tempFPS != 5) // if not 5
-										tempFPS -= 5; // then minus 5
+									if(settings.pendingFPS != 5) // if not 5
+										settings.pendingFPS -= 5; // then minus 5
 									break;
 								}
 							}
@@ -225,15 +211,15 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 						case(4):{ // Audio
 							switch(menuSelect){
 								case(1):{ // top
-									if(tempVolume != 0)  // if not 0
-										tempVolume -= 1; // then minus 1
+									if(settings.pendingVolume != 0)  // if not 0
+										settings.pendingVolume -= 1; // then minus 1
 									break;
 								}
 								case(2):{ // middle
-									if(tempPan > -1)	// if bigger -1
-										tempPan -= 0.1; // then minus 0.1
+									if(settings.pendingPan > -1)	// if bigger -1
+										settings.pendingPan -= 0.1; // then minus 0.1
 									else
-										tempPan = -1;   // else set to -1
+										settings.pendingPan = -1;   // else set to -1
 									break;
 								}
 							}
@@ -254,7 +240,7 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 									break;
 								}
 								case(2):{ // middle
-									tempFPS += 5; // add 5
+									settings.pendingFPS += 5; // add 5
 									break;
 								}
 							}
@@ -263,15 +249,15 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 						case(4):{ // Audio
 							switch(menuSelect){
 								case(1):{
-									if(tempVolume != 100) // if not 100
-										tempVolume += 1;  // add 1
+									if(settings.pendingVolume != 100) // if not 100
+										settings.pendingVolume += 1;  // add 1
 									break;
 								}
 								case(2):{
-									if(tempPan < 1)		// if smaller than 1
-										tempPan += 0.1; // then add 0.1
+									if(settings.pendingPan < 1)		// if smaller than 1
+										settings.pendingPan += 0.1; // then add 0.1
 									else
-										tempPan = 1;	// else set to 1
+										settings.pendingPan = 1;	// else set to 1
 									break;
 								}
 							}
@@ -286,13 +272,13 @@ bool keyPressEvent(ALLEGRO_EVENT ev){
 	return temp;
 }
 
-bool mouseEvent(ALLEGRO_EVENT ev){
+bool mouseEvent(ALLEGRO_EVENT ev, Settings& settings){
 	bool mouseTemp = false; // Temprary bool to return if player wants to quit
 
 		if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){ // if event is mouse button is pressed
 			if(gamePos == 1){ // menu
-				if(ev.mouse.x <= (WIDTH/2 + 150) && ev.mouse.x >= (WIDTH/2 - 150)){ // if mouse is in middle of screen
-					if(ev.mouse.y <= (HEIGHT/8*3 + 50) && ev.mouse.y >= (HEIGHT/8*3 - 50)){ // if mouse is in top Y position
+				if(ev.mouse.x <= (settings.width/2 + 150) && ev.mouse.x >= (settings.width/2 - 150)){ // if mouse is in middle of screen
+					if(ev.mouse.y <= (settings.height/8*3 + 50) && ev.mouse.y >= (settings.height/8*3 - 50)){ // if mouse is in top Y position
 						switch(menuText){
 							case(1):{ // main menu
 								gamePos = 2; // start game
@@ -304,24 +290,19 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 							}
 							case(3):{ // graphics menu
 								// Save values to ini and reinitialize game
-								iniWrite("Display", "Width", to_string(resWidth[resPos]));
-								iniWrite("Display", "Height", to_string(resHeight[resPos]));
-								iniWrite("Display", "FPS", to_string(tempFPS));
+								settings.saveDisplay(resWidth[resPos], resHeight[resPos], settings.pendingFPS);
 								destroy();
-								initialize();
+								initialize(settings);
 								break;
 							}
 							case(4):{ // audio menu
 								// Save and apply the values currently shown
-								iniWrite("Audio", "Volume", to_string(tempVolume));
-								iniWrite("Audio", "Pan", to_string(tempPan));
-								Volume = tempVolume;
-								Pan = tempPan;
+								settings.saveAudio(settings.pendingVolume, settings.pendingPan);
 								break;
 							}
 						}
 					}
-					if(ev.mouse.y <= (HEIGHT/8*4 + 50) && ev.mouse.y >= (HEIGHT/8*4 - 50)){ // if mouse is in middle Y position
+					if(ev.mouse.y <= (settings.height/8*4 + 50) && ev.mouse.y >= (settings.height/8*4 - 50)){ // if mouse is in middle Y position
 						switch(menuText){
 							case(1):{ // main menu
 								menuText = 2; // go to settings menu
@@ -333,24 +314,19 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 							}
 							case(3):{ // graphics menu
 								// Save values to ini and reinitialize game
-								iniWrite("Display", "Width", to_string(resWidth[resPos]));
-								iniWrite("Display", "Height", to_string(resHeight[resPos]));
-								iniWrite("Display", "FPS", to_string(tempFPS));
+								settings.saveDisplay(resWidth[resPos], resHeight[resPos], settings.pendingFPS);
 								destroy();
-								initialize();
+								initialize(settings);
 								break;
 							}
 							case(4):{ // audio menu
 								// Save and apply the values currently shown
-								iniWrite("Audio", "Volume", to_string(tempVolume));
-								iniWrite("Audio", "Pan", to_string(tempPan));
-								Volume = tempVolume;
-								Pan = tempPan;
+								settings.saveAudio(settings.pendingVolume, settings.pendingPan);
 								break;
 							}
 						}
 					}
-					if(ev.mouse.y <= (HEIGHT/8*5 + 50) && ev.mouse.y >= (HEIGHT/8*5 - 50)){ // if mouse is in bottom Y position
+					if(ev.mouse.y <= (settings.height/8*5 + 50) && ev.mouse.y >= (settings.height/8*5 - 50)){ // if mouse is in bottom Y position
 						switch(menuText){
 							case(1):{ // main menu
 								mouseTemp = true; // set exit temp to true
@@ -374,8 +350,8 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 			}
 			else if(gamePos == 3){ // ingame
 				// Jump when the player is standing on a platform
-				if (player->jump(jumpSpeed))
-					audio->jump(Volume, Pan);
+				if (player->jump(settings.jumpSpeed))
+					audio->jump(settings.volume, settings.pan);
 			}
 			else if(gamePos == 4){ // end screen
 				// Go to menu and destroy ground vector
@@ -384,8 +360,8 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 				groundVectorDestroy();
 			}
 		} else if(ev.type == ALLEGRO_EVENT_MOUSE_AXES || ev.type == ALLEGRO_EVENT_MOUSE_ENTER_DISPLAY){ // if mouse moves or enters display
-			if(ev.mouse.x <= (WIDTH/2 + 150) && ev.mouse.x >= (WIDTH/2 - 150)){	// if mouse in middle
-				if(ev.mouse.y <= (HEIGHT/8*3 + 50) && ev.mouse.y >= (HEIGHT/8*3 - 50)){ //if mouse in top y Position
+			if(ev.mouse.x <= (settings.width/2 + 150) && ev.mouse.x >= (settings.width/2 - 150)){	// if mouse in middle
+				if(ev.mouse.y <= (settings.height/8*3 + 50) && ev.mouse.y >= (settings.height/8*3 - 50)){ //if mouse in top y Position
 					switch(menuText){
 						case(3):{ // graphics menu
 							if(ev.mouse.dz > 0)					// mouse scroll forward
@@ -402,49 +378,49 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 						}
 						case(4):{ // audio menu 
 							if(ev.mouse.dz > 0)			// mouse scroll forward 		
-								if(tempVolume != 100)	// if not 100
-									tempVolume += 1;	// add 1
+								if(settings.pendingVolume != 100)	// if not 100
+									settings.pendingVolume += 1;	// add 1
 								else
-									tempVolume = 100;	// set to 100
+									settings.pendingVolume = 100;	// set to 100
 							else if(ev.mouse.dz < 0)	// mouse scroll backward
-								if(tempVolume != 0)			// if not 0
-									tempVolume -= 1;	// minus 1
+								if(settings.pendingVolume != 0)			// if not 0
+									settings.pendingVolume -= 1;	// minus 1
 								else
-									tempVolume = 0;		// set to 0					
+									settings.pendingVolume = 0;		// set to 0					
 							break;
 						}
 					}
 					menuSelect = 1; // set menuselect to top
 				}
-				if(ev.mouse.y <= (HEIGHT/8*4 + 50) && ev.mouse.y >= (HEIGHT/8*4 - 50)){
+				if(ev.mouse.y <= (settings.height/8*4 + 50) && ev.mouse.y >= (settings.height/8*4 - 50)){
 					switch(menuText){
 						case(3):{
 							if(ev.mouse.dz > 0)			// mouse scroll forward 
-									tempFPS += 5;		// add 5
+									settings.pendingFPS += 5;		// add 5
 							else if(ev.mouse.dz < 0)	// mouse scroll backward
-								if(tempFPS != 5)		// if not 5
-									tempFPS -= 5;		// minus 5
+								if(settings.pendingFPS != 5)		// if not 5
+									settings.pendingFPS -= 5;		// minus 5
 								else
-									tempFPS = 5;		// set to 5
+									settings.pendingFPS = 5;		// set to 5
 							break;
 						}
 						case(4):{
 							if(ev.mouse.dz > 0)			// mouse scroll forward 
-								if(tempPan < 1)			// if smaller than 1
-									tempPan += 0.1;		// add 0.1
+								if(settings.pendingPan < 1)			// if smaller than 1
+									settings.pendingPan += 0.1;		// add 0.1
 								else
-									tempPan = 1;		// set to 1
+									settings.pendingPan = 1;		// set to 1
 							else if(ev.mouse.dz < 0)	// mouse scroll backward
-								if(tempPan > -1)		// if bigger than -1
-									tempPan -= 0.1;		// minus 1
+								if(settings.pendingPan > -1)		// if bigger than -1
+									settings.pendingPan -= 0.1;		// minus 1
 								else
-									tempPan = -1;		// set to -1
+									settings.pendingPan = -1;		// set to -1
 							break;
 						}
 					}
 					menuSelect = 2; // set menuselect to middle
 				}
-				if(ev.mouse.y <= (HEIGHT/8*5 + 50) && ev.mouse.y >= (HEIGHT/8*5 - 50)){
+				if(ev.mouse.y <= (settings.height/8*5 + 50) && ev.mouse.y >= (settings.height/8*5 - 50)){
 					menuSelect = 3; // set menuselect to bottom
 				}
 			}
@@ -459,29 +435,29 @@ bool mouseEvent(ALLEGRO_EVENT ev){
 *
 */
 
-void drawEvent(){
+void drawEvent(const Settings& settings){
 	// Menu draw
 	switch(gamePos){
 		case(1):{ // menu
 
 			// Menu music
 			if(!audio->isMenuPlaying())
-				audio->loopMenu(Volume, Pan);
+				audio->loopMenu(settings.volume, settings.pan);
 
 			// draw menu screen
-			draw->menu(menuText, menuSelect, resWidth[resPos], resHeight[resPos], tempFPS, tempVolume, tempPan);
+			draw->menu(menuText, menuSelect, resWidth[resPos], resHeight[resPos], settings.pendingFPS, settings.pendingVolume, settings.pendingPan);
 			break;
 		}
 		case(2):{ // start
 			gamePos = 3; //go to ingame
 
-			player->start(startSpeed, WIDTH, HEIGHT); // set player start position
+			player->start(settings.startSpeed, settings.width, settings.height); // set player start position
 	
-			groundVector.emplace_back(HEIGHT);
-			groundVector.back().start(WIDTH, HEIGHT, draw->playerHeight(), lastX, lastY);
+			groundVector.emplace_back(settings.height);
+			groundVector.back().start(settings.width, settings.height, draw->playerHeight(), lastX, lastY);
 
-			for (int j = 0; j != int((WIDTH / 300) + 15); j++){ // loop as many times as diffrent ground are needed
-				groundVector.emplace_back(HEIGHT);
+			for (int j = 0; j != int((settings.width / 300) + 15); j++){ // loop as many times as diffrent ground are needed
+				groundVector.emplace_back(settings.height);
 				groundVector.back().create(lastX, lastY, player->getSpeed());
 			}
 
@@ -496,17 +472,17 @@ void drawEvent(){
 
 			// If ingame song is not playing then start it
 			if(!audio->isInGamePlaying())
-				audio->loopInGame(Volume, Pan);
+				audio->loopInGame(settings.volume, settings.pan);
 
 			// draw backround image
 			draw->bg();
 
 			// check if player has dropped to bottom
-			if (player->getY() + draw->playerHeight() >= HEIGHT) {
+			if (player->getY() + draw->playerHeight() >= settings.height) {
 				// set gamepos to 4 (end) and stop ingame song and play  end sound
 				gamePos = 4;
 				audio->stopLoopInGame();
-				audio->death(Volume, Pan);
+				audio->death(settings.volume, settings.pan);
 			};		
 
 			// Draw grounds to screen
