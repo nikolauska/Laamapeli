@@ -1,4 +1,6 @@
-#include "Include.h"
+#include "Ground.h"
+
+#include <cstdlib>
 
 // Create ground for starting position
 void Ground::start(int WIDTH, int HEIGHT, int pic, int &lastX, int &lastY){
@@ -26,7 +28,7 @@ void Ground::create(int &lastX, int &lastY, int speed){
 	else if (lastY == gPosY4)								// Check if lastY equals gound positon 4
 		this->y = gPosY3;									// Then Y will be positon 3
 	else													// Else we will randomize
-		if (int((rand() % 2 + 1 )) == 1)					// if rand 1-2 equals to 1
+		if (int((std::rand() % 2 + 1 )) == 1)					// if rand 1-2 equals to 1
 			if (lastY == gPosY2)							// If last position is position 2 
 				this->y = gPosY1;							// Then Y will be position 1 
 			else 
@@ -37,7 +39,7 @@ void Ground::create(int &lastX, int &lastY, int speed){
 			else
 				this->y = gPosY4;							// Else Y will be position 4
 
-	this->x = lastX + int((rand() % 100 + 1)) - speed;		// Set random X postion
+	this->x = lastX + int((std::rand() % 100 + 1)) - speed;		// Set random X postion
 
 	lastX = this->x;										// Save newly given X value to lastX
 	lastY = this->y;										// Save newly given Y value to lastY

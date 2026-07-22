@@ -1,7 +1,9 @@
-#include "Include.h"
+#include "Draw.h"
 
-Draw::Draw(int HEIGHT, int WIDTH, string folder){
-	string temp = folder + "/Font/font.ttf";
+#include <string>
+
+Draw::Draw(int HEIGHT, int WIDTH, std::string folder){
+	std::string temp = folder + "/Font/font.ttf";
 	font18 = al_load_font(temp.c_str(), 24, 0);
 	font42 = al_load_font(temp.c_str(), 42, 0);
 
@@ -75,9 +77,9 @@ void Draw::gameText(int score, int speed){
 void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, int Volume, float Pan){
 	al_draw_scaled_bitmap(menubg, 0, 0, this->menubgW, this->menubgH, 0, 0, this->WIDTH, this->HEIGHT, 0);
 
-	string text1 = "";
-	string text2 = "";
-	string text3 = "";
+	std::string text1 = "";
+	std::string text2 = "";
+	std::string text3 = "";
 
 	switch(menu){
 		case(1):{
@@ -93,14 +95,14 @@ void Draw::menu(int menu, int selection, int WIDTH, int HEIGHT, int FPS, int Vol
 			break;
 		}
 		case(3):{
-			text1 = "Resolution: " + to_string(WIDTH) + "X" + to_string(HEIGHT);
-			text2 = "FPS: " + to_string(FPS);
+			text1 = "Resolution: " + std::to_string(WIDTH) + "X" + std::to_string(HEIGHT);
+			text2 = "FPS: " + std::to_string(FPS);
 			text3 = "Back";
 			break;
 		}
 		case(4):{
-			text1 = "Volume: " + to_string(Volume);
-			text2 = "Pan: " + to_string(Pan);
+			text1 = "Volume: " + std::to_string(Volume);
+			text2 = "Pan: " + std::to_string(Pan);
 			text3 = "Back";
 			break;
 		}

@@ -1,9 +1,11 @@
-#include "Include.h"
+#include "Audio.h"
 
-Audio::Audio(string folder){
+#include <string>
+
+Audio::Audio(std::string folder){
 
 	// Load menusong and return error if not found
-	string temp = folder + "/Audio/menu.ogg";
+	std::string temp = folder + "/Audio/menu.ogg";
 	if(!(menuSong = al_load_sample(temp.c_str())))
 		throw "Menusong not found! \nWe suggest to check if filename is correct in 'Audio' folder. \nFilename for this file is 'menu.ogg'";
 

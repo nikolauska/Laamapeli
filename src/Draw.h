@@ -1,6 +1,11 @@
 #ifndef drawDEF
 #define drawDEF
 
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
+
+#include <string>
+
 class Draw{
 	private:
 		int WIDTH;
@@ -19,7 +24,7 @@ class Draw{
 		int selectorH;
 
 	public:
-		Draw(int, int, string);
+		Draw(int, int, std::string);
 		~Draw();
 
 		void player(int, int); 

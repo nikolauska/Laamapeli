@@ -1,5 +1,16 @@
 #include "GameState.h"
 
+#include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_native_dialog.h>
+#include <allegro5/allegro_ttf.h>
+
+#include <cstdlib>
+#include <ctime>
+#include <string>
+
 
 
 void GameState::findResolution(){
@@ -79,7 +90,7 @@ bool GameState::timerEvent(ALLEGRO_EVENT event){
 }
 
 
-void loadingScreen(const string& text, const Settings& settings, const std::shared_ptr<ALLEGRO_BITMAP>& loading, const std::shared_ptr<ALLEGRO_FONT>& fontLoading){
+void loadingScreen(const std::string& text, const Settings& settings, const std::shared_ptr<ALLEGRO_BITMAP>& loading, const std::shared_ptr<ALLEGRO_FONT>& fontLoading){
 	al_draw_scaled_bitmap(loading.get(), 0, 0, al_get_bitmap_width(loading.get()), al_get_bitmap_height(loading.get()), 0, 0, settings.width, settings.height, 0); // draw loading image
 	al_draw_text(fontLoading.get(), al_map_rgb(255, 0, 0), settings.width/2, settings.height/8*7, ALLEGRO_ALIGN_CENTER, text.c_str()); // draw text
 
@@ -114,7 +125,7 @@ int GameState::initialize(){
 	al_init_acodec_addon();
 
 	// load loading image and show error if not found
-	string temp = settings.folder + "/Pictures/loading.png";
+	std::string temp = settings.folder + "/Pictures/loading.png";
 	auto* loadingBitmap = al_load_bitmap(temp.c_str());
 	if(!loadingBitmap){
 		al_show_native_message_box(display_.get(), "ERROR", "IMAGES", "Backround for loadingscreen not found! \nWe suggest to check if filename is correct in 'Pictures' folder. \nFilename for this file is 'loading.png'", NULL, 0);
@@ -191,7 +202,7 @@ int GameState::initialize(){
 	al_start_timer(fpsTimer_.get());
 
 	// initialize rand
-	srand(time(NULL));
+	std::srand(std::time(nullptr));
 	return 0;
 }
 

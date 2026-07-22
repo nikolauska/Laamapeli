@@ -1,6 +1,10 @@
 #ifndef audioDEF
 #define audioDEF
 
+#include <allegro5/allegro_audio.h>
+
+#include <string>
+
 
 class Audio{
 	private:
@@ -8,7 +12,7 @@ class Audio{
 		bool InGamePlaying;
 
 	public:
-		Audio(string);
+		Audio(std::string);
 		~Audio(){	al_destroy_sample(menuSong);
 					al_destroy_sample(inGameSong);
 					al_destroy_sample(jumpSound);

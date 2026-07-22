@@ -1,10 +1,17 @@
 #ifndef GameStateDEF
 #define GameStateDEF
-#include "Include.h"
+#include "Audio.h"
+#include "Draw.h"
+#include "Ground.h"
+#include "Player.h"
 #include "Settings.h"
+
+#include <allegro5/allegro.h>
+
 #include <array>
 #include <memory>
 #include <optional>
+#include <vector>
 
 class GameState {
 public:
