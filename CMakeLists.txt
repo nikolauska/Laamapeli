@@ -15,14 +15,14 @@ pkg_check_modules(ALLEGRO REQUIRED IMPORTED_TARGET
 )
 
 add_executable(Laamapeli
-    Laamapeli/Audio.cpp
-    Laamapeli/Draw.cpp
-    Laamapeli/Events.cpp
-    Laamapeli/Ground.cpp
-    Laamapeli/GameState.cpp
-    Laamapeli/Settings.cpp
-    Laamapeli/Main.cpp
-    Laamapeli/Player.cpp
+    src/Audio.cpp
+    src/Draw.cpp
+    src/Events.cpp
+    src/Ground.cpp
+    src/GameState.cpp
+    src/Settings.cpp
+    src/Main.cpp
+    src/Player.cpp
 )
 
 target_compile_features(Laamapeli PRIVATE cxx_std_23)
@@ -34,10 +34,10 @@ endif()
 
 add_custom_command(TARGET Laamapeli POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E copy_directory
-            "${CMAKE_CURRENT_SOURCE_DIR}/Laamapeli/Default"
+            "${CMAKE_CURRENT_SOURCE_DIR}/assets/Default"
             "$<TARGET_FILE_DIR:Laamapeli>/Default"
     COMMAND "${CMAKE_COMMAND}"
-            "-DSOURCE=${CMAKE_CURRENT_SOURCE_DIR}/Laamapeli/Settings.ini"
+            "-DSOURCE=${CMAKE_CURRENT_SOURCE_DIR}/assets/Settings.ini"
             "-DDESTINATION=$<TARGET_FILE_DIR:Laamapeli>/Settings.ini"
             -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CopyIfMissing.cmake"
     VERBATIM
